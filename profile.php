@@ -16,22 +16,31 @@ if(isset($_GET['username'])){
 
         if(isset($_POST['follow'])){
 
-            if(!DB::query('SELECT follower_id FROM followers WHERE user_id=:userid', array(':userid'=>$userid))){
-                DB::query('INSERT INTO followers VALUES (\'\', :userid, :followerid)', array(':userid'=>$userid, ':followerid'=>$followerid));
-            } else {
-                echo "ALREADY FOLLOWING";
+        if($userid != $followerid)
+            {
+            
+                if(!DB::query('SELECT follower_id FROM followers WHERE user_id=:userid', array(':userid'=>$userid)))
+                {
+                    DB::query('INSERT INTO followers VALUES (\'\', :userid, :followerid)', array(':userid'=>$userid, ':followerid'=>$followerid));
+                
+                } else 
+                {
+                    echo "ALREADY FOLLOWING";
+                }
+                $isFollowing = true;
             }
-            $isFollowing = true;
         }
 
         if(isset($_POST['unfollow'])){
 
-            if(DB::query('SELECT follower_id FROM followers WHERE user_id=:userid', array(':userid'=>$userid))){
-                DB::query('DELETE FROM followers WHERE user_id=:userid AND follower_id=:followerid', array(':userid'=>$userid, ':followerid'=>$followerid));
-            } else {
-                echo "ALREADY FOLLOWING";
+            if($userid != $followerid){
+
+                if(DB::query('SELECT follower_id FROM followers WHERE user_id=:userid', array(':userid'=>$userid)))
+                {
+                    DB::query('DELETE FROM followers WHERE user_id=:userid AND follower_id=:followerid', array(':userid'=>$userid, ':followerid'=>$followerid));
+                }
+                $isFollowing = false;
             }
-            $isFollowing = true;
         }
 
 
@@ -52,10 +61,13 @@ if(isset($_GET['username'])){
 
 <form action="profile.php?username=<?php echo $username;?>" method="POST">
     <?php 
-    if($isFollowing){
-        echo '<input type="submit" name="unfollow" value="Unfollow">';
-    } else {
-        echo '<input type="submit" name="follow" value="Follow">';
+    if($userid != $followerid)
+    {
+        if($isFollowing){
+            echo '<input type="submit" name="unfollow" value="Unfollow">';
+        } else {
+            echo '<input type="submit" name="follow" value="Follow">';
+        }
     }
     ?>
 </form>
