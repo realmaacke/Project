@@ -1,8 +1,8 @@
 <?php
-include('classes/DB.php');
-include('classes/login.php');
-include('classes/Post.php');
-
+include('./classes/DB.php');
+include('./classes/Login.php');
+include('./classes/Post.php');
+include('./classes/Image.php');
 
 $username = "";
 $verified = False;
@@ -48,17 +48,30 @@ if (isset($_GET['username'])) {
                         $isFollowing = True;
                 }
 
-
-                if (isset($_POST['post'])) 
-                {
-                    Post::createPost($_POST['postbody'], Login::isLoggedIn(), $userid);
+                if (isset($_POST['deletepost'])) {
+                        if (DB::query('SELECT id FROM posts WHERE id=:postid AND user_id=:userid', array(':postid'=>$_GET['postid'], ':userid'=>$followerid))) {
+                                DB::query('DELETE FROM posts WHERE id=:postid and user_id=:userid', array(':postid'=>$_GET['postid'], ':userid'=>$followerid));
+                                DB::query('DELETE FROM post_likes WHERE post_id=:postid', array(':postid'=>$_GET['postid']));
+                                echo 'Post deleted!';
+                        }
                 }
 
-                if (isset($_GET['postid'])) {
-                    Post::likePost($_GET['postid'], $followerid);
+
+                if (isset($_POST['post'])) {
+                        if ($_FILES['postimg']['size'] == 0) {
+                                Post::createPost($_POST['postbody'], Login::isLoggedIn(), $userid);
+                        } else {
+                                $postid = Post::createImgPost($_POST['postbody'], Login::isLoggedIn(), $userid);
+                                Image::uploadImage('postimg', "UPDATE posts SET postimg=:postimg WHERE id=:postid", array(':postid'=>$postid));
+                        }
                 }
 
-                $post = Post::RenderPosts($userid, $username, $loggedInUserId);
+                if (isset($_GET['postid']) && !isset($_POST['deletepost'])) {
+                        Post::likePost($_GET['postid'], $followerid);
+                }
+
+                $posts = Post::displayPosts($userid, $username, $followerid);
+
 
         } else {
                 die('User not found!');
@@ -78,8 +91,11 @@ if (isset($_GET['username'])) {
         }
         ?>
 </form>
-<form action="profile.php?username=<?php echo $username; ?>" method="post">
+
+<form action="profile.php?username=<?php echo $username; ?>" method="post" enctype="multipart/form-data">
         <textarea name="postbody" rows="8" cols="80"></textarea>
+        <br />Upload an image:
+        <input type="file" name="postimg">
         <input type="submit" name="post" value="Post">
 </form>
 
