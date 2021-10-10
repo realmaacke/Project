@@ -1,10 +1,13 @@
 <?php
+// includes from classes
 include('./classes/DB.php');
 include('./classes/Login.php');
 include('./classes/Post.php');
 include('./classes/Comment.php');
+
+
 $showTimeline = False;
-if (Login::isLoggedIn()) {
+if (Login::isLoggedIn()) {    // is logged in check
         $userid = Login::isLoggedIn();
         $showTimeline = True;
 } else {

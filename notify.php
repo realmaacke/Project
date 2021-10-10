@@ -13,7 +13,7 @@ if (DB::query('SELECT * FROM notifications WHERE receiver=:userid', array(':user
         $notifications = DB::query('SELECT * FROM notifications WHERE receiver=:userid', array(':userid'=>$userid));
 
         foreach($notifications as $n) {
-                print_r($n);
+                echo $n['notice'];
         }
 
 }
