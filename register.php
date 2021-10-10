@@ -1,6 +1,7 @@
 <?php
 include('classes/DB.php');
 include('classes/Mail.php');
+include('classes/Redirect.php');
 
 
 if (isset($_POST['createaccount'])) {
@@ -22,7 +23,7 @@ if (isset($_POST['createaccount'])) {
 
                                         DB::query('INSERT INTO users VALUES (\'\', :username, :password, :email, \'0\', \'\')', array(':username'=>$username, ':password'=>password_hash($password, PASSWORD_BCRYPT), ':email'=>$email));
                                         Mail::sendMail('Welcome to Combined!', 'Your Account has been created!', $email);
-                                        echo "Success!";
+                                        Redirect::goto("index.php");
                                 } else {
                                         echo 'Email in use!';
                                 }

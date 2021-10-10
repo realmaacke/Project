@@ -6,7 +6,7 @@ class Notify {
 
                 foreach ($text as $word) {
                         if (substr($word, 0, 1) == "@") {
-                                $notify[substr($word, 1)] = array("type"=>1, "extra"=>' { "postbody": "'.htmlentities(implode($text, " ")).'" } ');
+                                $notify[substr($word, 1)] = array("type"=>1, "extra"=>' { "postbody": "'.htmlentities(implode($text)).'" } ');
                         }
                 }
 
