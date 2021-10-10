@@ -2,6 +2,8 @@ General:
 
 CMBNID = token ID
 
+\'\' = NULL
+
 POST METHOD = [
 PHP $_POST is a PHP super global variable which is used to collect form data after submitting an HTML form with method="post".
 $_POST is also widely used to pass variables
