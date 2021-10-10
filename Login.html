@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Combined</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/ionicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="assets/css/Login-Form-Dark.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body>
+    <section class="login-dark">
+        <form method="post">
+            <h2 class="visually-hidden">Login Form</h2>
+            <div class="illustration">
+                <i class="icon ion-ios-locked-outline"></i>
+            </div>
+            <div class="mb-3">
+                <input class="form-control" type="text" id="username" name="username" placeholder="Username">
+            </div>
+            <div class="mb-3">
+                <input class="form-control" type="password" id="password" name="password" placeholder="Password">
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-primary d-block w-100" data-bss-hover-animate="shake" id="login" type="button">Log In</button>
+            </div
+            ><a class="forgot" href="#">Forgot your email or password?</a>
+        </form>
+    </section>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <!-- <script src="assets/js/bs-animation.js"></script> -->
+    <script type="text/javascript">
+        $('#login').click(function() {
+
+                $.ajax({
+
+                        type: "POST",
+                        url: "api/auth",
+                        processData: false,
+                        contentType: "application/json",
+                        data: '{ "username": "'+ $("#username").val() +'", "password": "'+ $("#password").val() +'" }',
+                        success: function(r) {
+                                console.log(r)
+                        },
+                        error: function(r) {
+                                setTimeout(function() {
+                                $('[data-bs-hover-animate]').removeClass('animated ' + $('[data-bs-hover-animate]').attr('data-bs-hover-animate'));
+                                }, 2000)
+                                $('[data-bs-hover-animate]').addClass('animated ' + $('[data-bs-hover-animate]').attr('data-bs-hover-animate'))
+                                console.log(r)
+                        }
+
+                });
+
+        });
+    </script>
+</body>
+
+</html>
