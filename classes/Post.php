@@ -106,14 +106,14 @@ class Post {
         public static function displayPosts($userid, $username, $loggedInUserId) {
                 $dbposts = DB::query('SELECT * FROM posts WHERE user_id=:userid ORDER BY id DESC', array(':userid'=>$userid));
                 $posts = "";
-
                 foreach($dbposts as $p) {
 
                         if (!DB::query('SELECT post_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$p['id'], ':userid'=>$loggedInUserId))) {
 
-                                $posts .= "<img src='".$p['postimg']."'>".self::link_add($p['body'])."
+                                $posts .= "<img width='300' heigth='300' src='".$p['postimg']."'> <hr />          ".self::link_add($p['body'])."
+
                                 <form action='profile.php?username=$username&postid=".$p['id']."' method='post'>
-                                        <input type='submit' name='like' value='Like'>
+                                        <input type='submit' name='like' value='+' >
                                         <span>".$p['likes']." likes</span>
                                 ";
                                 if ($userid == $loggedInUserId) {
@@ -126,8 +126,8 @@ class Post {
                         } else {
                                 $posts .= "<img src='".$p['postimg']."'>".self::link_add($p['body'])."
                                 <form action='profile.php?username=$username&postid=".$p['id']."' method='post'>
-                                <input type='submit' name='unlike' value='Unlike'>
-                                <span>".$p['likes']." likes</span>
+                                <input type='submit' name='unlike' value='-'>
+                                <span>".$p['likes']." Reps      </span>
                                 ";
                                 if ($userid == $loggedInUserId) {
                                         $posts .= "<input type='submit' name='deletepost' value='x' />";

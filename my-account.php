@@ -1,6 +1,7 @@
 <?php
 include('./classes/DB.php');
 include('./classes/Login.php');
+include('./classes/Image.php');
 if (Login::isLoggedIn()) {
         $userid = Login::isLoggedIn();
 } else {

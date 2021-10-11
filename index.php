@@ -36,7 +36,13 @@ if (isset($_POST['searchbox'])) {
         }
         // users search
         $users = DB::query('SELECT users.username FROM users WHERE users.username LIKE :username '.$whereclause.'', $paramsarray); // <-- Searchin both array and string
-        print_r($users);
+        
+        foreach($users as $user)
+        { ?>
+
+         <a href="profile.php?username=<?php echo $user['username']?>"><?php echo $user['username'] ?></a>
+
+  <?php }
 
         $whereclause = "";
         $paramsarray = array(':body'=>'%'.$_POST['searchbox'].'%');
@@ -48,9 +54,6 @@ if (isset($_POST['searchbox'])) {
         }
         // post search
         $posts = DB::query('SELECT posts.body FROM posts WHERE posts.body LIKE :body '.$whereclause.'', $paramsarray);
-        echo '<pre>';
-        print_r($posts);
-        echo '</pre>';
 }
 
 ?>
