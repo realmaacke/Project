@@ -4,22 +4,55 @@ include('./classes/Login.php');
 include('./classes/Post.php');
 include('./classes/Image.php');
 include('./classes/Notify.php');
+include('./classes/Redirect.php');
 
-
+//standard variables
 $username = "";
 $verified = False;
 $isFollowing = False;
 $hasImage = False;
+
 if (isset($_GET['username'])) {
         if (DB::query('SELECT username FROM users WHERE username=:username', array(':username'=>$_GET['username']))) {
 
                 
-
+                // Declaring variables based on querys
                 $username = DB::query('SELECT username FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['username'];
                 $userid = DB::query('SELECT id FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['id'];
                 $verified = DB::query('SELECT verified FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['verified'];
                 $img = DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['profileimg'];
                 $followerid = Login::isLoggedIn();
+
+
+                // ammount of posts u made
+                $postAmmount = DB::query('SELECT * FROM POSTS WHERE user_id=:userid', array(':userid'=>$userid));
+                $postvalue = 0;
+
+
+                foreach($postAmmount as $postAmmounts)
+                {
+                        $postvalue++;
+                }
+
+
+
+                // Ammount that follows u 
+                $ammountofFollowers = DB::query('SELECT * FROM followers WHERE user_id =:userid', array(':userid'=>$userid));
+                $followervalue = 0;     // follower value == null
+                foreach($ammountofFollowers as $ammount) // for each follower ++;
+                {
+                 $followervalue++;
+                }
+                // ammount that u follow
+                $selfFollow = DB::query('SELECT * FROM followers WHERE follower_id =:userid', array(':userid'=>$userid));
+                $clientFollow = 0;     // follower value == null
+                foreach($selfFollow as $ammount) // for each follower ++;
+                {
+                 $clientFollow++;
+                }
+
+
+
 
                 if(DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['profileimg'])
                 {
@@ -132,7 +165,9 @@ if (isset($_GET['username'])) {
                     ?>
                     <div class="mt-3">
                       <h4><?php echo "@",$username; ?></h4>
-                      <p class="text-secondary mb-1"> <span style="color: #08ffbd;">Verified </span></p>
+                      <h5 class="text-secondary mb-1"> <span style="color: #08ffbd;">Verified </span></h5>
+                      <p class="text-secondary mb-1"><?php echo $postvalue; ?> Posts <?php  echo $clientFollow;?> Following <?php echo $followervalue; ?> Followers</p>
+                      
 
                       <form action="profile.php?username=<?php echo $username; ?>" method="post">
                                 <?php
@@ -196,7 +231,9 @@ if (isset($_GET['username'])) {
                <?php }
                 ?>
 
-                        <?php echo $posts; ?>
+                        <?php echo $posts; 
+                        ?>
+                        
             </div>
           </div>
 
