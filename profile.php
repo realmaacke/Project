@@ -5,9 +5,11 @@ include('./classes/Post.php');
 include('./classes/Image.php');
 include('./classes/Notify.php');
 
+
 $username = "";
 $verified = False;
 $isFollowing = False;
+$hasImage = False;
 if (isset($_GET['username'])) {
         if (DB::query('SELECT username FROM users WHERE username=:username', array(':username'=>$_GET['username']))) {
 
@@ -18,6 +20,16 @@ if (isset($_GET['username'])) {
                 $verified = DB::query('SELECT verified FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['verified'];
                 $img = DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['profileimg'];
                 $followerid = Login::isLoggedIn();
+
+                if(DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['profileimg'])
+                {
+                        $hasImage = true;
+                }
+                else{
+                        $hasImage = false;
+                }
+
+
 
                 if (isset($_POST['follow'])) {
 
@@ -90,6 +102,7 @@ if (isset($_GET['username'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="GUI/profile.css">
     <link rel="stylesheet" href="GUI/forms.css">
     <link rel="stylesheet" href="GUI/profile.css">
     <link rel="stylesheet" href="GUI/universal/style.css">
@@ -97,19 +110,28 @@ if (isset($_GET['username'])) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
- 
+
     <title>Combined Profile</title>
 </head>
 <body>
 <div class="container">
     <div class="main-body">
-
           <div class="row gutters-sm">
             <div class="col-md-4 mb-3">
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex flex-column align-items-center text-center">
-                    <img src="<?php echo $img; ?>" alt="Admin" class="rounded-circle" width="150" height="150">
+                          <?php 
+                          if($hasImage) // bool if user have an uploaded image
+                          {?>
+                        <img src="<?php echo $img; ?>" alt="Admin" class="rounded-circle" width="150" height="150">
+                    <?php }
+                    // else use the standard image
+                    else{ ?>   
+                        <img src="assets/img/standard-avatar.jpg" alt="Admin" class="rounded-circle" width="150" height="150"> 
+                    <?php }
+                    
+                    ?>
                     <div class="mt-3">
                       <h4><?php echo "@",$username; ?></h4>
                       <p class="text-secondary mb-1"> <span style="color: #08ffbd;">Verified </span></p>
@@ -127,7 +149,7 @@ if (isset($_GET['username'])) {
                         </form>
 
 
-                      <button class="btn btn-outline-primary">Message</button>
+                      <a href="my-messages.php"class="btn btn-outline-primary">Messages</a>
                     </div>
                   </div>
                 </div>
@@ -160,9 +182,13 @@ if (isset($_GET['username'])) {
                 <div class="card-body">
                         <form action="profile.php?username=<?php echo $username; ?>" id="post" method="post" enctype="multipart/form-data">
                                 <textarea name="postbody" rows="8" cols="70"></textarea>
-                                <br />Upload an image:
-                                <input type="file" name="postimg">
-                                <input type="submit" name="post" value="Post">
+
+                                <input type="file" name="postimg" id="BtnBrowseHidden" name="files" style=" width:0px; height:0px;display: none;" />
+                                <label for="BtnBrowseHidden" id="LblBrowse" class="btn btn-primary" style="margin-top: 10px">
+                                        <i class="far fa-images"></i>
+                                </label>
+
+                                <button type="submit" class="btn btn-primary" style="width:60px;" name="post"><i class="fas fa-arrow-right"></i></button>
                         </form>
                         <hr />
 

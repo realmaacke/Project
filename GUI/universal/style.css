@@ -8,10 +8,14 @@ body, html {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#192d38",endColorstr="#211f2f",GradientType=1);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: #fff;
+    color: #656566;
     font-weight: 300;
 }
 
+
+h1{
+    color: white;
+}
 
 #profileimg {
     border-radius: 50%;

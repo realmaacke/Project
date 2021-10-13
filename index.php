@@ -19,18 +19,18 @@ if (isset($_POST['comment'])) {
         Comment::createComment($_POST['commentbody'], $_GET['postid'], $userid);
 }
 
-
-if (isset($_POST['searchbox'])) {
+if (isset($_POST['searchbox'])) 
+{
         $tosearch = explode(" ", $_POST['searchbox']);
-        if (count($tosearch) == 1) {
+        if (count($tosearch) == 1)
+        {
                 $tosearch = str_split($tosearch[0], 2); 
-                // makes it possible to search with spelling mistakes, 
-                // grabing the string and spliting into chunks, then searching from the whole string and the array
         }
         $whereclause = "";
         $paramsarray = array(':username'=>'%'.$_POST['searchbox'].'%');
 
-        for ($i = 0; $i < count($tosearch); $i++) {     // looping through results array
+        for ($i = 0; $i < count($tosearch); $i++) 
+        {     // looping through results array
                 $whereclause .= " OR username LIKE :u$i ";
                 $paramsarray[":u$i"] = $tosearch[$i];
         }
@@ -56,20 +56,31 @@ if (isset($_POST['searchbox'])) {
         $posts = DB::query('SELECT posts.body FROM posts WHERE posts.body LIKE :body '.$whereclause.'', $paramsarray);
 }
 
-?>
-
-<form action="index.php" method="post">
-        <input type="text" name="searchbox" value="">
-        <input type="submit" name="search" value="Search">
-</form>
-
-<?php
-
 $followingposts = DB::query('SELECT posts.id, posts.body, posts.likes, users.`username` FROM users, posts, followers
 WHERE posts.user_id = followers.user_id
 AND users.id = posts.user_id
 AND follower_id = :userid
 ORDER BY posts.likes DESC;', array(':userid'=>$userid));
+
+
+?> 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Combined Home</title>
+</head>
+<body>
+
+
+        
+</body>
+</html>
+
+<?php
 
 foreach($followingposts as $post) {
 

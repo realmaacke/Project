@@ -1,0 +1,14 @@
+
+
+nav {
+    width: 96%;
+    background-color: aqua;
+    margin: 2%;
+    height: 56px;
+    overflow: hidden;
+    display:inline; 
+}
+
+ul{
+    display: inline;
+}
