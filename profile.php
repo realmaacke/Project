@@ -92,9 +92,7 @@ if (isset($_GET['username'])) {
         } else {
                 die('User not found!');
         }
-}
-
-?>
+} ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -180,7 +178,11 @@ if (isset($_GET['username'])) {
             <div class="col-md-8">
               <div class="card mb-3">
                 <div class="card-body">
-                        <form action="profile.php?username=<?php echo $username; ?>" id="post" method="post" enctype="multipart/form-data">
+                <?php 
+                if($userid == $followerid)
+
+                { ?> 
+                                <form action="profile.php?username=<?php echo $username; ?>" id="post" method="post" enctype="multipart/form-data">
                                 <textarea name="postbody" rows="8" cols="70"></textarea>
 
                                 <input type="file" name="postimg" id="BtnBrowseHidden" name="files" style=" width:0px; height:0px;display: none;" />
@@ -191,6 +193,8 @@ if (isset($_GET['username'])) {
                                 <button type="submit" class="btn btn-primary" style="width:60px;" name="post"><i class="fas fa-arrow-right"></i></button>
                         </form>
                         <hr />
+               <?php }
+                ?>
 
                         <?php echo $posts; ?>
             </div>

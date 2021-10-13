@@ -60,8 +60,7 @@ $followingposts = DB::query('SELECT posts.id, posts.body, posts.likes, users.`us
 WHERE posts.user_id = followers.user_id
 AND users.id = posts.user_id
 AND follower_id = :userid
-ORDER BY posts.likes DESC;', array(':userid'=>$userid));
-
+ORDER BY posts.id DESC;', array(':userid'=>$userid));
 
 ?> 
 
@@ -74,11 +73,6 @@ ORDER BY posts.likes DESC;', array(':userid'=>$userid));
         <title>Combined Home</title>
 </head>
 <body>
-
-
-        
-</body>
-</html>
 
 <?php
 
@@ -109,3 +103,6 @@ foreach($followingposts as $post) {
 
 
 ?>
+        
+        </body>
+</html>

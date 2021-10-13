@@ -1,9 +1,9 @@
 <?php
 include('./classes/DB.php');
 include('./classes/Login.php');
-
+include('./classes/Redirect.php');
 if (!Login::isLoggedIn()) {
-        die("Not logged in.");
+        Redirect::goto('login.php');
 }
 
 if (isset($_POST['confirm'])) {

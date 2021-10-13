@@ -1,5 +1,6 @@
 <?php
 include('classes/DB.php');
+include('classes/Redirect.php');
 
 if(isset($_POST['login'])){
   $username = $_POST['username'];
@@ -8,12 +9,12 @@ if(isset($_POST['login'])){
   if(DB::query('SELECT username FROM users WHERE username=:username', array(':username'=>$username))){
   // Grabing password from the username to compare if it is correct
     if(password_verify($password, DB::query('SELECT password FROM users WHERE username=:username', array(':username'=>$username))[0]['password'])) {
-      echo "Logged in";
       $cstrong = true;
       $token = bin2hex(openssl_random_pseudo_bytes(64, $cstrong));
       $user_id = DB::query('SELECT id FROM users WHERE username=:username', array(':username'=>$username))[0]['id'];
       DB::query('INSERT INTO login_tokens VALUES (\'\', :token, :user_id)', array('token'=>sha1($token), ':user_id'=>$user_id));
      setcookie("CMBNID", $token, time() + 60 * 60 * 24 * 7, '/', NULL, NULL, TRUE);
+     Redirect::goto('index.php');
 
     } else {
       echo "Wrong credentials";
