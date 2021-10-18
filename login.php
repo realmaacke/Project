@@ -1,35 +1,70 @@
 <?php
 include('classes/DB.php');
 include('classes/Redirect.php');
+include('classes/authorization.php');
 
+$error = "";
 if(isset($_POST['login'])){
   $username = $_POST['username'];
   $password = $_POST['password'];
-  // Checking if username is located in db
-  if(DB::query('SELECT username FROM users WHERE username=:username', array(':username'=>$username))){
-  // Grabing password from the username to compare if it is correct
-    if(password_verify($password, DB::query('SELECT password FROM users WHERE username=:username', array(':username'=>$username))[0]['password'])) {
-      $cstrong = true;
-      $token = bin2hex(openssl_random_pseudo_bytes(64, $cstrong));
-      $user_id = DB::query('SELECT id FROM users WHERE username=:username', array(':username'=>$username))[0]['id'];
-      DB::query('INSERT INTO login_tokens VALUES (\'\', :token, :user_id)', array('token'=>sha1($token), ':user_id'=>$user_id));
-     setcookie("CMBNID", $token, time() + 60 * 60 * 24 * 7, '/', NULL, NULL, TRUE);
-     Redirect::goto('index.php');
+  authorization::login($username, $password);
+} 
 
-    } else {
-      echo "Wrong credentials";
-    }
-
-
-  } else{
-    echo "Wrong credentials";
-  }
+if(isset($_GET['error']))
+{
+  $error = "<br> <p id='errormsg' style='color:red'>Invalid Credentials!</p>";
 }
 
- ?>
-<h1>Login</h1>
-<form class="" action="login.php" method="post">
-<input type="text" name="username" value="" placeholder="Username"></p>
-<input type="password" name="password" value="" placeholder="Password"></p>
-<input type="submit" name="login" value="Login">
-</form>
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="GUI/login.css">
+  <link rel="stylesheet" href="GUI/universal/style.css">
+  <title>Combined</title>
+</head>
+<body>
+
+<div class="wrapper fadeInDown">
+
+  <h1>Combined Login</h1>
+
+  <div id="formContent">
+    <!-- Tabs Titles -->
+    <h2 class="active"> Sign In </h2>
+    <h2 class="inactive underlineHover"><a href="register.php">Sign up</a></h2>
+    <?php 
+      echo $error;
+      ?>
+    <!-- Login Form -->
+    <form action="login.php" method="POST">
+      <input type="text" id="username" class="fadeIn second" name="username" placeholder="login">
+      <input type="password" id="password" class="fadeIn third" name="password" placeholder="password">
+      <input type="submit" id="login" class="fadeIn fourth" name="login" value="Log In">
+    </form>
+
+    <!-- Remind Passowrd -->
+    <div id="formFooter">
+      <a class="underlineHover" href="#">Forgot Password?</a>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+
+<script>  // error msg function
+function hideMessage() 
+{
+    document.getElementById("errormsg").style.display = "none";
+};
+setTimeout(hideMessage, 3000);
+</script>

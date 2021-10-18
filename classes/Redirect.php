@@ -10,4 +10,10 @@ class Redirect{
             exit();
         }
     }
+
+    public static function redirectData($data = null)
+    {
+        $value = $data;
+        return $value;
+    }
 }
