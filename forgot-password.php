@@ -1,6 +1,5 @@
 <?php
-include('classes/DB.php');
-include('classes/Mail.php');
+include('autoload.php');
 
 if (isset($_POST['resetpassword'])) {
 

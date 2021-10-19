@@ -10,8 +10,7 @@ if(!isset($_SESSION['token']))  // if session token dosent exists, create a toke
 }
 //
 
-include('./classes/DB.php');
-include('./classes/Login.php');
+include('autoload.php');
 if (Login::isLoggedIn()) {
         $userid = Login::isLoggedIn();
 } else {

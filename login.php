@@ -1,7 +1,5 @@
 <?php
-include('classes/DB.php');
-include('classes/Redirect.php');
-include('classes/authorization.php');
+include('autoload.php');
 
 $error = "";
 if(isset($_POST['login'])){

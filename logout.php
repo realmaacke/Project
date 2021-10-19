@@ -1,7 +1,5 @@
 <?php
-include('./classes/DB.php');
-include('./classes/Login.php');
-include('./classes/Redirect.php');
+include('autoload.php');
 if (!Login::isLoggedIn()) {
         Redirect::goto('login.php');
 }

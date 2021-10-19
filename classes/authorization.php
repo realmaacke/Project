@@ -20,23 +20,23 @@ class authorization {
                                     Mail::sendMail('Welcome to Combined!', 'Your Account has been created!', $email);
                                     Redirect::goto("index.php");
                             } else {
-                                $_SESSION['error'] = "1";
+                               Redirect::goto('register.php?emailError');
                             }
                     } else {
-                        $_SESSION['error'] = "2";
+                        Redirect::goto('register.php?emailError');
                             }
                     } else {
-                        $_SESSION['error'] = "3";
+                        Redirect::goto('register.php?SendUsernameSpecialCharError');
                     }
                     } else {
-                        $_SESSION['error'] = "4";
+                        Redirect::goto('register.php?emailError');
                     }
             } else {
-                $_SESSION['error'] = "5";
+                Redirect::goto('register.php?usernameErrorToLong');
             }
 
     } else {
-        $_SESSION['error'] = "6";
+        Redirect::goto('register.php?usernameError');
     }
     }
 

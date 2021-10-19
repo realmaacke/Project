@@ -1,17 +1,39 @@
 <?php
 session_start();
-include('classes/DB.php');
-include('classes/Mail.php');
-include('classes/Redirect.php');
-include('classes/authorization.php');
+include('autoload.php');
 
-$error = "";
 if (isset($_POST['createaccount'])) 
 {
  $username = $_POST['username'];
  $password = $_POST['password'];
  $email = $_POST['email'];
  authorization::register($username,$password,$email);
+}
+
+$error = "";
+
+if(isset($_GET['emailError']))
+{
+  $error = Send::SendEmailError();
+}
+
+if(isset($_GET['usernameError']))
+{
+  $error = Send::SendUsernameError();
+}
+
+if(isset($_GET['usernameErrorToLong']))
+{
+  $error = Send::SendUsernameToLongError();
+}
+if(isset($_GET['usernameErrorToLong']))
+{
+  $error = Send::SendUsernameSpecialCharError();
+}
+
+if(isset($_GET['passwordError']))
+{
+  $error = Send::SendPasswordError();
 }
 
 
