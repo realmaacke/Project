@@ -20,9 +20,6 @@ class Comment {
                 $comments = DB::query('SELECT comments.comment, users.username FROM comments, users WHERE post_id = :postid AND comments.user_id = users.id', array(':postid'=>$postId));
                 foreach($comments as $comment) 
                 {       
-                        echo "<a href='profile.php?username=".$comment['username']."'>".$comment['username']."</a>";
-                        echo "<p> ".$comment['comment']." </p>";
-                        echo "<hr />";
                 }
         }
 }

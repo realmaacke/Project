@@ -67,11 +67,17 @@ ORDER BY posts.id DESC;', array(':userid'=>$userid));
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Home - COMBINED</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/index-style.css">
+    <link rel="stylesheet" href="GUI/index-style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
     <link rel="stylesheet" href="assets/fonts/simple-line-icons.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
     <link rel="stylesheet" href="assets/css/vanilla-zoom.min.css">
+    <script src="javascript.js"></script>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
+<script src="assets/js/vanilla-zoom.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/6bfb37676a.js" crossorigin="anonymous"></script>
 </head>
 <body>
 <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
@@ -88,70 +94,60 @@ ORDER BY posts.id DESC;', array(':userid'=>$userid));
         </div>
     </nav>
 
+    <?php 
+$state = "";
+if(isset($_GET['like'])){
+        $state = $_GET['value'];
+}
 
-    <div class="Main">
+?>
 
 
-    <?php foreach($followingposts as $post) { ?>
 
-
-        <!-- Post starts -->
-        <div class="Post">
-            <div class="PostHeader">
-                <img src="assets/avatar.png" id="avatar" width="76" height="76" alt="">
-                 <h3 id="username"><a href="profile.php?username=<?php echo $post['username']; ?>">@<?php echo $post['username'] ?></a></h3>
-                 <a href="" id="report"><i class="fas fa-ellipsis-h"></i></a>
-            </div>
-            <hr />
-
-            <div class="PostContent">
-                <p><?php echo $post['body'] ?></p>
-            </div>
-            <hr />
-            <div class="interactions">
-            <form action='index.php?postid="<?php $post['id']?> "' method='post'>
-                <?php if (!DB::query('SELECT post_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$post['id'], ':userid'=>$userid))) 
-                { ?>
-                <input type='submit' name='like' value='Like' hidden/>
-                <label for="like"><i class="far fa-heart"></i> <span><?php echo $post['likes'] ?></span></label>
-
-          <?php } ?>
-                <a href=""><i class="far fa-comment"></i> <span>123124</span></a>
-                <a href=""><i class="far fa-save"></i></a>
-            </div>
-            <hr>
+<div class="Main">
+<?php 
+      foreach($followingposts as $posts)
+      { ?>
+      
+        <div class="P_header">
+            <img id="avatar" src="assets/avatar.png" width="65" height="65" alt="">
+           <h3 id="username"><a href="profile.php?username=<?php echo $posts['username']?>">@<?php echo $posts['username']?></a></h3>
         </div>
-        <!-- Post Ends -->
-    </div>
-
-    <?php
-
-        if (!DB::query('SELECT post_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$post['id'], ':userid'=>$userid))) {
-
-        echo "<input type='submit' name='like' value='Like'>";
-        } else {
-        echo "<input type='submit' name='unlike' value='Unlike'>";
-        }
-        echo "<span>".$post['likes']." likes</span>
-        </form>
-        <form action='index.php?postid=".$post['id']."' method='post'>
-        <textarea name='commentbody' rows='3' cols='50'></textarea>
-        <input type='submit' name='comment' value='Comment'>
-        </form>
-        ";
-        Comment::displayComments($post['id']);
-        echo "
-        <hr /></br />";
+        <hr />
+        <!-- making the content clickable for a montal  -->
+        <a href=""> 
+            <div class="P_main">
+               <p> <?php echo $posts['body']; ?> </p>
+            </div>
+        </a>
+        <div class="P_interact">
+                <button onclick="send()" value="like" id="like">Like</button>
+                <?php 
+                echo $state;
+                ?>
+        <hr />
+        </div>
+<?php } ?>
+</div>
 
 
-}?>
+
+<script>
+
+function send(){
+var value = document.getElementById('like').value;
+
+console.log(value);
+        var data = {
+            value: "value",
+        };
+
+        $.get("index.php", data);
+}
+
+</script>
 
 
-<script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-    <script src="assets/js/vanilla-zoom.js"></script>
-    <script src="assets/js/theme.js"></script>
-    <script src="https://kit.fontawesome.com/6bfb37676a.js" crossorigin="anonymous"></script>
-        
 </body>
 </html>
+
