@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
         } else if ($_GET['url'] == "posts") {
 
-                $token = $_COOKIE['SNID'];
+                $token = $_COOKIE['CMBNID'];
 
                 $userid = $db->query('SELECT user_id FROM login_tokens WHERE token=:token', array(':token'=>sha1($token)))[0]['user_id'];
 
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
                 $email = $postBody->email;
                 $password = $postBody->password;
 
-
+                // REGISTER
                 if (!$db->query('SELECT username FROM users WHERE username=:username', array(':username'=>$username))) {
 
                         if (strlen($username) >= 3 && strlen($username) <= 32) {
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
                 $username = $postBody->username;
                 $password = $postBody->password;
-
+                // LOGIN
                 if ($db->query('SELECT username FROM users WHERE username=:username', array(':username'=>$username))) {
                         if (password_verify($password, $db->query('SELECT password FROM users WHERE username=:username', array(':username'=>$username))[0]['password'])) {
                                 $cstrong = True;
@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
         } else if ($_GET['url'] == "likes") {
                 $postId = $_GET['id'];
-                $token = $_COOKIE['SNID'];
+                $token = $_COOKIE['CMBNID'];
                 $likerId = $db->query('SELECT user_id FROM login_tokens WHERE token=:token', array(':token'=>sha1($token)))[0]['user_id'];
 
                 if (!$db->query('SELECT user_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$postId, ':userid'=>$likerId))) {
