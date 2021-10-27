@@ -1,10 +1,11 @@
 <?php
 class login 
-{
+{ 
             public static function isLoggedIn() 
             {
 
-                if (isset($_COOKIE['CMBNID'])) {
+                if (isset($_COOKIE['CMBNID'])) 
+                {
                         if (DB::query('SELECT user_id FROM login_tokens WHERE token=:token', array(':token'=>sha1($_COOKIE['CMBNID'])))) {
                                 $userid = DB::query('SELECT user_id FROM login_tokens WHERE token=:token', array(':token'=>sha1($_COOKIE['CMBNID'])))[0]['user_id'];
 
@@ -23,7 +24,6 @@ class login
                                 }
                         }
                 }
-
                 return false;
         }
 }

@@ -1,56 +1,13 @@
 <?php
 include('autoload.php');
-$showTimeline = False;
-if (Login::isLoggedIn()) {
-        $userid = Login::isLoggedIn();
-        $showTimeline = True;
-} else {
-        Redirect::goto("login.php");
-}
- 
-if (isset($_GET['postid'])) {
-        Post::likePost($_GET['postid'], $userid);
-}
-if (isset($_POST['comment'])) {
-        Comment::createComment($_POST['commentbody'], $_GET['postid'], $userid);
+
+if(isset($_POST['likes'])){
+        echo "liked";
 }
 
-if (isset($_POST['searchbox'])) 
-{
-        $tosearch = explode(" ", $_POST['searchbox']);
-        if (count($tosearch) == 1)
-        {
-                $tosearch = str_split($tosearch[0], 2); 
-        }
-        $whereclause = "";
-        $paramsarray = array(':username'=>'%'.$_POST['searchbox'].'%');
 
-        for ($i = 0; $i < count($tosearch); $i++) 
-        {     // looping through results array
-                $whereclause .= " OR username LIKE :u$i ";
-                $paramsarray[":u$i"] = $tosearch[$i];
-        }
-        // users search
-        $users = DB::query('SELECT users.username FROM users WHERE users.username LIKE :username '.$whereclause.'', $paramsarray); // <-- Searchin both array and string
-        
-        foreach($users as $user)
-        { ?>
+$likeState = false;
 
-         <a href="profile.php?username=<?php echo $user['username']?>"><?php echo $user['username'] ?></a>
-
-  <?php }
-
-        $whereclause = "";
-        $paramsarray = array(':body'=>'%'.$_POST['searchbox'].'%');
-        for ($i = 0; $i < count($tosearch); $i++) {
-                if ($i % 2) {   // searchin for every 2nd word
-                $whereclause .= " OR body LIKE :p$i ";
-                $paramsarray[":p$i"] = $tosearch[$i];
-                }
-        }
-        // post search
-        $posts = DB::query('SELECT posts.body FROM posts WHERE posts.body LIKE :body '.$whereclause.'', $paramsarray);
-}
 
 $followingposts = DB::query('SELECT posts.id, posts.body, posts.likes, users.`username` FROM users, posts, followers
 WHERE posts.user_id = followers.user_id
@@ -71,7 +28,6 @@ ORDER BY posts.id DESC;', array(':userid'=>$userid));
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
     <link rel="stylesheet" href="assets/fonts/simple-line-icons.min.css">
     <link rel="stylesheet" href="assets/css/vanilla-zoom.min.css">
-    <script src="javascript.js"></script>
 <script src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
 <script src="assets/js/vanilla-zoom.js"></script>
@@ -94,17 +50,11 @@ ORDER BY posts.id DESC;', array(':userid'=>$userid));
         </div>
     </nav>
 
-    <?php 
-$state = "";
-if(isset($_GET['like'])){
-        $state = $_GET['value'];
-}
-
-?>
-
-
-
 <div class="Main">
+
+
+<button type="button" id="likebtn">Click</button>
+
 <?php 
       foreach($followingposts as $posts)
       { ?>
@@ -130,24 +80,64 @@ if(isset($_GET['like'])){
 <?php } ?>
 </div>
 
-
-
-<script>
-
-function send(){
-var value = document.getElementById('like').value;
-
-console.log(value);
-        var data = {
-            value: "value",
-        };
-
-        $.get("index.php", data);
-}
-
-</script>
-
-
 </body>
 </html>
 
+</div>
+  </div>
+</div>
+</body>
+</html>
+
+
+
+<script>
+      function likeButton() {
+          var parentEl = this.parentElement;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'interact.php', true);
+        // form data is sent appropriately as a POST request
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.onreadystatechange = function () {asf
+          if(xhr.readyState == 4 && xhr.status == 200) {
+            var result = xhr.responseText;
+            console.log('Result: ' + result);
+            if(result == "true"){
+                parentEl.classList.add('liked');
+            }
+          }
+        };
+        xhr.send("id=" + parentEl.id);
+      }
+
+      var buttons = document.getElementsByClassName("like-button");
+      for(i=0; i < buttons.length; i++) {
+        buttons.item(i).addEventListener("click", likeButton);
+      }
+
+      function unlikeButton() {
+          var parentEl = this.parentElement;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'interact.php', true);
+        // form data is sent appropriately as a POST request
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.onreadystatechange = function () {
+          if(xhr.readyState == 4 && xhr.status == 200) {
+            var result = xhr.responseText;
+            console.log('Result: ' + result);
+            if(result == "true"){
+                parentEl.classList.remove('liked');
+            }
+          }
+        }; 
+        xhr.send("id=" + parentEl.id);
+      }
+
+      var buttons = document.getElementsByClassName("unlike-button");
+      for(i=0; i < buttons.length; i++) {
+        buttons.item(i).addEventListener("click", unlikeButton);
+      }
+
+    </script>
