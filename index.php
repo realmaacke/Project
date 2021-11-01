@@ -1,13 +1,14 @@
 <?php
 include('autoload.php');
 
-if(isset($_POST['likes'])){
-        echo "liked";
+
+if (Login::isLoggedIn()) {
+  $userid = Login::isLoggedIn();
+} else {
+ Redirect::goto('login.php');
 }
 
-
-$likeState = false;
-
+$name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
 
 $followingposts = DB::query('SELECT posts.id, posts.body, posts.likes, users.`username` FROM users, posts, followers
 WHERE posts.user_id = followers.user_id
@@ -44,7 +45,7 @@ ORDER BY posts.id DESC;', array(':userid'=>$userid));
                     <li class="nav-item"><a class="nav-link" href="features.html">DISCOVER</a></li>
                     <li class="nav-item"><a class="nav-link" href="pricing.html">MESSAGES<br></a></li>
                     <li class="nav-item"><a class="nav-link" href="about-us.html">MORE</a></li>
-                    <li class="nav-item"><a class="nav-link" href="contact-us.html">PROFILE</a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.php?username=<?php echo $name ?>">PROFILE</a></li>
                 </ul>
             </div>
         </div>
@@ -52,8 +53,6 @@ ORDER BY posts.id DESC;', array(':userid'=>$userid));
 
 <div class="Main">
 
-
-<button type="button" id="likebtn">Click</button>
 
 <?php 
       foreach($followingposts as $posts)

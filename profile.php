@@ -1,5 +1,12 @@
 <?php
+
 include('autoload.php');
+
+if (Login::isLoggedIn()) {
+    $validLogin = Login::isLoggedIn();
+} else {
+   Redirect::goto('login.php');
+}
 
 //standard variables
 $username = "";
@@ -7,9 +14,10 @@ $verified = False;
 $isFollowing = False;
 $hasImage = False;
 
-if (isset($_GET['username'])) {
-        if (DB::query('SELECT username FROM users WHERE username=:username', array(':username'=>$_GET['username']))) {
-
+if (isset($_GET['username'])) 
+{
+        if (DB::query('SELECT username FROM users WHERE username=:username', array(':username'=>$_GET['username']))) 
+        {
                 
                 // Declaring variables based on querys
                 $username = DB::query('SELECT username FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['username'];
@@ -23,13 +31,10 @@ if (isset($_GET['username'])) {
                 $postAmmount = DB::query('SELECT * FROM POSTS WHERE user_id=:userid', array(':userid'=>$userid));
                 $postvalue = 0;
 
-
                 foreach($postAmmount as $postAmmounts)
                 {
                         $postvalue++;
                 }
-
-
 
                 // Ammount that follows u 
                 $ammountofFollowers = DB::query('SELECT * FROM followers WHERE user_id =:userid', array(':userid'=>$userid));
@@ -46,9 +51,6 @@ if (isset($_GET['username'])) {
                  $clientFollow++;
                 }
 
-
-
-
                 if(DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['profileimg'])
                 {
                         $hasImage = true;
@@ -56,8 +58,6 @@ if (isset($_GET['username'])) {
                 else{
                         $hasImage = false;
                 }
-
-
 
                 if (isset($_POST['follow'])) {
 
@@ -117,122 +117,147 @@ if (isset($_GET['username'])) {
                 $posts = Post::displayPosts($userid, $username, $followerid);
 
 
-        } else {
+        } else 
+        {
                 die('User not found!');
         }
+} else {
+    Redirect::goto('index.php');
 } ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Profile - COMBINED</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="GUI/index-style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
+    <link rel="stylesheet" href="assets/fonts/simple-line-icons.min.css">
+    <link rel="stylesheet" href="assets/css/vanilla-zoom.min.css">
     <link rel="stylesheet" href="GUI/profile.css">
-    <link rel="stylesheet" href="GUI/forms.css">
-    <link rel="stylesheet" href="GUI/profile.css">
-    <link rel="stylesheet" href="GUI/universal/style.css">
-    <script src="https://kit.fontawesome.com/6bfb37676a.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
-
-    <title>Combined Profile</title>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
+<script src="assets/js/vanilla-zoom.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/6bfb37676a.js" crossorigin="anonymous"></script>
 </head>
+
+
 <body>
-<div class="container">
-    <div class="main-body">
-          <div class="row gutters-sm">
-            <div class="col-md-4 mb-3">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex flex-column align-items-center text-center">
-                          <?php 
-                          if($hasImage) // bool if user have an uploaded image
-                          {?>
-                        <img src="<?php echo $img; ?>" alt="Admin" class="rounded-circle" width="150" height="150">
-                    <?php }
-                    // else use the standard image
-                    else{ ?>   
-                        <img src="assets/img/standard-avatar.jpg" alt="Admin" class="rounded-circle" width="150" height="150"> 
-                    <?php }
-                    
-                    ?>
-                    <div class="mt-3">
-                      <h4><?php echo "@",$username; ?></h4>
-                      <h5 class="text-secondary mb-1"> <span style="color: #08ffbd;">Verified </span></h5>
-                      <p class="text-secondary mb-1"><?php echo $postvalue; ?> Posts <?php  echo $clientFollow;?> Following <?php echo $followervalue; ?> Followers</p>
-                      
-
-                      <form action="profile.php?username=<?php echo $username; ?>" method="post">
-                                <?php
-                                if ($userid != $followerid) {
-                                        if ($isFollowing) {
-                                                echo '<input class="btn btn-primary" type="submit" name="unfollow" value="Unfollow">';
-                                        } else {
-                                                echo '<input class="btn btn-primary" type="submit" name="follow" value="Follow">';
-                                        }
-                                }
-                                ?>
-                        </form>
-
-
-                      <a href="my-messages.php"class="btn btn-outline-primary">Messages</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <?php
-                if ($userid == $followerid)
-                {
-                
-                        ?>
-                        <div class="card mt-3">
-                        <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                 <h6 class="mb-0"> <a href="my-account.php">Settings <i class="fas fa-cog"></i></a></h6>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                 <h6 class="mb-0"> <a href="">Report a bug <i class="fas fa-user-shield"></i></a></h6>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                        <h6 class="mb-0"> <a href="logout.php">Logout <i class="fas fa-sign-out-alt"></i></a></h6>
-                                </li>
-                        </ul>
-                        </div>
-                        <?php
-                        
-                }
-                 ?>
-            </div>      
-            <div class="col-md-8">
-              <div class="card mb-3">
-                <div class="card-body">
-                <?php 
-                if($userid == $followerid)
-
-                { ?> 
-                                <form action="profile.php?username=<?php echo $username; ?>" id="post" method="post" enctype="multipart/form-data">
-                                <textarea name="postbody" rows="8" cols="70"></textarea>
-
-                                <input type="file" name="postimg" id="BtnBrowseHidden" name="files" style=" width:0px; height:0px;display: none;" />
-                                <label for="BtnBrowseHidden" id="LblBrowse" class="btn btn-primary" style="margin-top: 10px">
-                                        <i class="far fa-images"></i>
-                                </label>
-
-                                <button type="submit" class="btn btn-primary" style="width:60px;" name="post"><i class="fas fa-arrow-right"></i></button>
-                        </form>
-                        <hr />
-               <?php }
-                ?>
-
-                        <?php echo $posts; 
-                        ?>
-                        
+    <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
+        <div class="container">
+            <a class="navbar-brand logo" href="index.php">COMBINED</a>
+            <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
+                <span class="visually-hidden">Toggle navigation</span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">SEARCH</a></li>
+                    <li class="nav-item"><a class="nav-link" href="features.html">DISCOVER<br></a></li>
+                    <li class="nav-item"><a class="nav-link active" href="pricing.html">MESSAGES</a></li>
+                    <li class="nav-item"><a class="nav-link" href="new.php?username=<?php echo $username; ?>">PROFILE<br></a></li>
+                </ul>
             </div>
-          </div>
-
         </div>
-    </div>
+    </nav>
+
+    <main class="page pricing-table-page" style="height: 100%;">
+        <section style="height: 1041px;margin-top: -29px;">
+            <div class="container" style="height: 765px;min-height: 15px;margin-top: 61px;width: 1343px;">
+                <div class="row">
+                    <div class="col-md-6" style="height: 872px;">
+                        <div class="card"
+                            style="height: 457px;width: 516px;margin-left: 48px;box-shadow: 5px 5px rgb(230,234,237);">
+                            <div class="card-body">
+                                <div style="height: 244px;">
+                                    <div style="height: 177px;width: 203px;margin: auto;margin-top: 2px;">
+
+                                    <?php
+                                    if($hasImage)
+                                    {
+                                        ?> <img src="<?php echo $img; ?>"  style="width: 100%; height: 100%; filter: blur(0px); box-shadow: 0px 34px 57px -12px rgba(161,161,161,1);
+                                        -webkit-box-shadow: 0px 34px 57px -12px rgba(161,161,161,1);
+                                        -moz-box-shadow: 0px 34px 57px -12px rgba(161,161,161,1);" >  <?php 
+                                    }else 
+                                    {
+                                        ?> <img src="assets/avatar.png"  style="width: 100%;height: 100%;filter: blur(0px); box-shadow: 0px 34px 57px -12px rgba(161,161,161,1);
+                                        -webkit-box-shadow: 0px 34px 57px -12px rgba(161,161,161,1);
+                                        -moz-box-shadow: 0px 34px 57px -12px rgba(161,161,161,1);"" >  <?php
+                                    }
+                                    
+                                    ?>
+                                    </div>
+                                    <div style="height: 64px;">
+                                    <!-- verified here -->
+                                    <p style="float: right"></p>    
+                                    <h1 style="margin-top: 9px;"><?php echo "@",$username; ?></h1>
+                                        
+                                    </div>
+                                </div>
+                                <div style="height: 192px;">
+                                    <div id="stripe_white"></div>
+                                    <div style="height: 29px;margin-top: 14px;">
+                                        <p><?php echo $postvalue; ?> Posts <?php  echo $clientFollow;?> Following <?php echo $followervalue; ?> Followers</p>
+                                    </div>
+                                    <div style="height: 141px;">
+                                        <div id="stripe_white"></div>
+                                        <div style="height: 103px;margin: auto;width: 199px;">
+
+
+                                    <form action="profile.php?username=<?php echo $username; ?>" method="post">
+                                    <?php if ($userid != $followerid) 
+                                    {
+                                        ?>
+
+                                        <?php
+                                        if ($isFollowing) 
+                                        {
+                                                echo '<input class="btn btn-primary" style="margin-left: 45px;margin-top: 10px;" type="submit" name="unfollow" value="Unfollow">';
+                                        } else {
+                                            echo '<input class="btn btn-primary" style="margin-left: 55px;margin-top: 10px;" type="submit" name="follow" value="Follow">';
+                                        }
+                                    }
+                                    ?>
+                                    </form>
+                                    <?php 
+                                    if($userid != $followerid)
+                                    { ?>
+                                         <button class="btn btn-primary" type="button" style="margin-left: 46px;margin-top: 3px;">Message</button>
+                                    <?php } ?>
+                                       </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card"
+                            style="width: 516px;height: 275px;margin-left: 48px;margin-top: 25px;box-shadow: 5px 5px rgb(230,234,237);">
+                            <div class="card-body" style="height: 316px;">
+                                <div style="height: 68px;margin-top: 13px;">
+                                    <h1 id="settings"><a href="my-account.php"> <i class="fas fa-sliders-h"></i> Settings</a></h1>
+                                    <div id="stripe_white"></div>
+                                </div>
+                                <div style="height: 68px;margin-top: 13px;">
+                                    <h1 id="settings"><a href="report.php"> <i class="fas fa-bug"></i> Report a bug</a></h1>
+                                    <div id="stripe_white"></div>
+                                </div>
+                                <div style="height: 68px;margin-top: 13px;">
+                                    <h1 id="settings"><a href="logout.php"> <i class="fas fa-sign-out-alt"></i> Sign out</a></h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6" style="height: 800px;">
+                        <div class="card" style="height: 759px;box-shadow: 5px 5px rgb(230,234,237);">
+                                            <!-- posts -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
 </body>
-</html>  
+</html>
