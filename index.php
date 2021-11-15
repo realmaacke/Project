@@ -21,122 +21,79 @@ ORDER BY posts.id DESC;', array(':userid'=>$userid));
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Home - COMBINED</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="GUI/index-style.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
-    <link rel="stylesheet" href="assets/fonts/simple-line-icons.min.css">
-    <link rel="stylesheet" href="assets/css/vanilla-zoom.min.css">
-<script src="assets/bootstrap/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-<script src="assets/js/vanilla-zoom.js"></script>
-<script src="assets/js/theme.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script src="https://kit.fontawesome.com/6bfb37676a.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Visual/style.css">
+    <script src="https://kit.fontawesome.com/6bfb37676a.js" crossorigin="anonymous"></script>
+    <title>COMBINED - HOME</title>
 </head>
 <body>
-<nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
-        <div class="container"><a class="navbar-brand logo" href="#">COMBINED<br></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navcol-1">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="index.html" style="filter: blur(0px);">SEARCH&nbsp;</a></li>
-                    <li class="nav-item"><a class="nav-link" href="features.html">DISCOVER</a></li>
-                    <li class="nav-item"><a class="nav-link" href="pricing.html">MESSAGES<br></a></li>
-                    <li class="nav-item"><a class="nav-link" href="about-us.html">MORE</a></li>
-                    <li class="nav-item"><a class="nav-link" href="profile.php?username=<?php echo $name ?>">PROFILE</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <div class="navigation">
+        <ul>
+            <a href="index.html"><h1>COMBINED</h1></a>
+                <li> <a href="profile.html">Profile</a> </li>
+                <li> <a href="dm.html">Messages</a> </li>
+                <li> <a href="friends.html">Friends</a> </li>
+                <li> <a href="search.html">Search</a> </li>
+        </ul>
+    </div>
 
-<div class="Main">
+    <div class="flow">
+     <?php foreach($followingposts as $posts) {
+       $hasImage = false;
+       $img = DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$posts['username']))[0]['profileimg'];
+       
+       if(DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$posts['username']))[0]['profileimg'])
+        {
+         $hasImage = true;
+        }
+        else{
+          $hasImage = false;
+        }
 
+        $comments = DB::query('SELECT * FROM comments WHERE post_id=:userid',array(':userid'=>$posts['id']));
+        $ammountOfComments = 0;
+        foreach($comments as $comment){
+          $ammountOfComments++;
+        }
 
-<?php 
-      foreach($followingposts as $posts)
-      { ?>
-      
-        <div class="P_header">
-            <img id="avatar" src="assets/avatar.png" width="65" height="65" alt="">
-           <h3 id="username"><a href="profile.php?username=<?php echo $posts['username']?>">@<?php echo $posts['username']?></a></h3>
-        </div>
-        <hr />
-        <!-- making the content clickable for a montal  -->
-        <a href=""> 
-            <div class="P_main">
-               <p> <?php echo $posts['body']; ?> </p>
-            </div>
-        </a>
-        <div class="P_interact">
-                <button onclick="send()" value="like" id="like">Like</button>
+       ?>
+        <div class="post">
+            <div class="left">
+                <div class="top">
+                  <?php 
+                    if($hasImage){ ?> 
+                    
+                    <img src="<?php echo $img; ?>" alt="" style="margin: auto; margin-left: 5px;" width="80" height="80">
                 <?php 
-                echo $state;
-                ?>
-        <hr />
+                }
+                else {
+                  ?> <img src="Visual/img/avatar.png" alt="" style="margin: auto; margin-left: 5px;" width="80" height="80">
+                  <?php 
+                }
+                  ?>
+                    
+                    <h3><a href="profile.php?username=<?php echo $posts['username'] ?>"><?php echo "@". $posts['username']; ?></a></h3>
+                </div>
+            </div>
+            <div class="right">
+                <div id="post-top">
+                    <?php 
+                    echo Post::link_add($posts['body']);
+                    ?>
+                </div>
+                <div id="post-bottom">
+                    <label for="likes"><?php echo $posts['likes'];?> </label>
+                    <button><i class="far fa-heart"></i></button>
+                    <label for="comments"><?php echo $ammountOfComments; ?></label>
+                    <button><i class="far fa-comments"></i></button>
+                    <button style="float:right"><i class="fas fa-ellipsis-v"></i></button>
+                </div>
+            </div>
         </div>
-<?php } ?>
-</div>
-
+        <?php } ?>
+    </div>
 </body>
 </html>
-
-</div>
-  </div>
-</div>
-</body>
-</html>
-
-
-
-<script>
-      function likeButton() {
-          var parentEl = this.parentElement;
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'interact.php', true);
-        // form data is sent appropriately as a POST request
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        xhr.onreadystatechange = function () {asf
-          if(xhr.readyState == 4 && xhr.status == 200) {
-            var result = xhr.responseText;
-            console.log('Result: ' + result);
-            if(result == "true"){
-                parentEl.classList.add('liked');
-            }
-          }
-        };
-        xhr.send("id=" + parentEl.id);
-      }
-
-      var buttons = document.getElementsByClassName("like-button");
-      for(i=0; i < buttons.length; i++) {
-        buttons.item(i).addEventListener("click", likeButton);
-      }
-
-      function unlikeButton() {
-          var parentEl = this.parentElement;
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'interact.php', true);
-        // form data is sent appropriately as a POST request
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        xhr.onreadystatechange = function () {
-          if(xhr.readyState == 4 && xhr.status == 200) {
-            var result = xhr.responseText;
-            console.log('Result: ' + result);
-            if(result == "true"){
-                parentEl.classList.remove('liked');
-            }
-          }
-        }; 
-        xhr.send("id=" + parentEl.id);
-      }
-
-      var buttons = document.getElementsByClassName("unlike-button");
-      for(i=0; i < buttons.length; i++) {
-        buttons.item(i).addEventListener("click", unlikeButton);
-      }
-
-    </script>

@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
                                         if (!$db->query('SELECT email FROM users WHERE email=:email', array(':email'=>$email))) {
 
                                                 $db->query('INSERT INTO users VALUES (\'\', :username, :password, :email, \'0\', \'\')', array(':username'=>$username, ':password'=>password_hash($password, PASSWORD_BCRYPT), ':email'=>$email));
-                                                Mail::sendMail('Welcome to our Social Network!', 'Your account has been created!', $email);
+                                            
                                                 echo '{ "Success": "User Created!" }';
                                                 http_response_code(200);
                                         } else {

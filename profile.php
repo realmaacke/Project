@@ -9,16 +9,26 @@ if (Login::isLoggedIn()) {
 }
 
 //standard variables
+$localUsername = "";
 $username = "";
 $verified = False;
 $isFollowing = False;
 $hasImage = False;
 
+$localUsername = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$validLogin))[0]['username'];
+
+
+
+if (isset($_POST['uploadprofileimg'])) 
+{
+    Image::uploadImage('profileimg', "UPDATE users SET profileimg = :profileimg WHERE id=:userid", array(':userid'=>$userid));
+}
+
+
 if (isset($_GET['username'])) 
 {
         if (DB::query('SELECT username FROM users WHERE username=:username', array(':username'=>$_GET['username']))) 
-        {
-                
+        {    
                 // Declaring variables based on querys
                 $username = DB::query('SELECT username FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['username'];
                 $userid = DB::query('SELECT id FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['id'];
@@ -158,7 +168,7 @@ if (isset($_GET['username']))
                     <li class="nav-item"><a class="nav-link" href="index.html">SEARCH</a></li>
                     <li class="nav-item"><a class="nav-link" href="features.html">DISCOVER<br></a></li>
                     <li class="nav-item"><a class="nav-link active" href="pricing.html">MESSAGES</a></li>
-                    <li class="nav-item"><a class="nav-link" href="new.php?username=<?php echo $username; ?>">PROFILE<br></a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.php?username=<?php echo $localUsername; ?>">PROFILE<br></a></li>
                 </ul>
             </div>
         </div>
@@ -236,7 +246,7 @@ if (isset($_GET['username']))
                             style="width: 516px;height: 275px;margin-left: 48px;margin-top: 25px;box-shadow: 5px 5px rgb(230,234,237);">
                             <div class="card-body" style="height: 316px;">
                                 <div style="height: 68px;margin-top: 13px;">
-                                    <h1 id="settings"><a href="my-account.php"> <i class="fas fa-sliders-h"></i> Settings</a></h1>
+                                    <h1 id="settings"><a id="SettingsBTN"> <i class="fas fa-sliders-h"></i> Settings</a></h1>
                                     <div id="stripe_white"></div>
                                 </div>
                                 <div style="height: 68px;margin-top: 13px;">
@@ -244,7 +254,7 @@ if (isset($_GET['username']))
                                     <div id="stripe_white"></div>
                                 </div>
                                 <div style="height: 68px;margin-top: 13px;">
-                                    <h1 id="settings"><a href="logout.php"> <i class="fas fa-sign-out-alt"></i> Sign out</a></h1>
+                                    <h1 id="settings"><a id="signoutBTN" style="cursor: pointer;">  <i class="fas fa-sign-out-alt"></i> Sign out</a></h1>
                                 </div>
                             </div>
                         </div>
@@ -252,6 +262,9 @@ if (isset($_GET['username']))
                     <div class="col-md-6" style="height: 800px;">
                         <div class="card" style="height: 759px;box-shadow: 5px 5px rgb(230,234,237);">
                                             <!-- posts -->
+                                            <?php 
+                                            echo Post::displayPosts($userid, $username, $validLogin);
+                                            ?>
                         </div>
                     </div>
                 </div>
@@ -259,5 +272,93 @@ if (isset($_GET['username']))
         </section>
     </main>
 
+
+
+<!-- Sign out modal -->
+<div id="signoutModal" class="modal">
+
+  <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+
+      <h1 style="font-size: 1.2em">Sign out </h1>
+      <hr>
+      <br>
+        <form action="profile.php" method="post">
+                <input type="checkbox" name="alldevices" value="alldevices"> Sign out of all devices?<br />
+                <br>
+                <input type="submit" name="confirm" value="Sign out">
+        </form>
+    </div>
+</div> 
+
+
+<!-- Settings out modal -->
+<div id="settingsModal" class="modal">
+
+  <!-- Modal content -->
+    <div class="modal-content">
+      <a id="close">&times;</a>
+
+      <h1 style="font-size: 1.2em">Account Settings</h1>
+      <hr>
+      <br>
+      <form action="profile.php?username=<?php echo $username ?>" method="post" enctype="multipart/form-data">
+        Upload a profile image:
+        <input type="file" name="profileimg">
+        <input type="submit" name="uploadprofileimg" value="Upload Image">
+</form>
+    </div>
+</div> 
+
+
 </body>
 </html>
+
+<!-- Sign out modal -->
+<script>
+    var view = document.getElementById("settingsModal");
+
+    document.getElementById("SettingsBTN").addEventListener("click", function() 
+    {
+        view.style.display = "block";
+    }); 
+
+    document.getElementById("close").addEventListener("click", function() 
+    {
+        view.style.display = "none";
+    }); 
+    
+
+</script>
+
+
+    
+<!-- settings modal -->
+<script>
+  // Get the modal
+var modal = document.getElementById("signoutModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("signoutBTN");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+} 
+</script>

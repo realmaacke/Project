@@ -103,6 +103,7 @@ class Post {
                 return $newstring;
         }
 
+
         public static function displayPosts($userid, $username, $loggedInUserId) {
                 $dbposts = DB::query('SELECT * FROM posts WHERE user_id=:userid ORDER BY id DESC', array(':userid'=>$userid));
                 $posts = "";
