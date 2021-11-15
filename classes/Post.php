@@ -67,7 +67,6 @@ class Post {
                         DB::query('UPDATE posts SET likes=likes-1 WHERE id=:postid', array(':postid'=>$postId));
                         DB::query('DELETE FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$postId, ':userid'=>$likerId));
                 }
-
         }
 
         public static function getTopics($text) {
@@ -147,6 +146,5 @@ class Post {
 
                 return $posts;
         }
-
 }
 ?>

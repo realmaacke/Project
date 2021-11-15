@@ -16,6 +16,24 @@ AND users.id = posts.user_id
 AND follower_id = :userid
 ORDER BY posts.id DESC;', array(':userid'=>$userid));
 
+if(isset($_GET['like']))
+{
+  $postid = $_POST['id'];
+
+  if (!DB::query('SELECT user_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$postid, ':userid'=>$userid))) 
+  {
+    DB::query('UPDATE posts SET likes=likes+1 WHERE id=:postid', array(':postid'=>$postid));
+    DB::query('INSERT INTO post_likes VALUES (\'\', :postid, :userid)', array(':postid'=>$postid, ':userid'=>$userid));
+  }
+}
+
+if(isset($_GET['unlike']))
+{
+  $postid = $_POST['id'];
+  POST::likePost($postid, $userid);
+}
+
+
 ?> 
 
 <!DOCTYPE html>
@@ -52,8 +70,8 @@ ORDER BY posts.id DESC;', array(':userid'=>$userid));
         else{
           $hasImage = false;
         }
-
-        $comments = DB::query('SELECT * FROM comments WHERE post_id=:userid',array(':userid'=>$posts['id']));
+        
+        $comments = DB::query('SELECT * FROM comments WHERE post_id=:targetID',array(':targetID'=>$posts['id']));
         $ammountOfComments = 0;
         foreach($comments as $comment){
           $ammountOfComments++;
@@ -85,15 +103,13 @@ ORDER BY posts.id DESC;', array(':userid'=>$userid));
                     ?>
                 </div>
                 <div id="post-bottom">
-                    <label for="likes"><?php echo $posts['likes'];?> </label>
-                    <button><i class="far fa-heart"></i></button>
-                    <label for="comments"><?php echo $ammountOfComments; ?></label>
-                    <button><i class="far fa-comments"></i></button>
-                    <button style="float:right"><i class="fas fa-ellipsis-v"></i></button>
+                <button type='submit' name='unlike' class='btn btn-primary'><?php echo $posts['likes']; ?><i class='far fa-heart'></i></button>
                 </div>
             </div>
         </div>
         <?php } ?>
     </div>
+
 </body>
 </html>
+
