@@ -1,3 +1,14 @@
+<?php
+include('autoload.php');
+
+
+if (Login::isLoggedIn()) {
+  $userid = Login::isLoggedIn();
+} else {
+ Redirect::goto('login.php');
+}
+$name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username']; // grabing name for navbar
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,10 +27,10 @@
     <div class="navigation">
         <ul>
             <a href="index.php"><h1>COMBINED</h1></a>
-                <li> <a href="profile.html">Profile</a> </li>
-                <li> <a href="dm.html">Messages</a> </li>
-                <li> <a href="friends.html">Friends</a> </li>
-                <li> <a href="search.html">Search</a> </li>
+                <li> <a href="profile.php?username=<?php echo $name;?>">Profile</a> </li>
+                <li> <a href="dm.php">Messages</a> </li>
+                <li> <a href="friends.php">Friends</a> </li>
+                <li> <a href="search.php">Search</a> </li>
         </ul>
     </div>
     <div class="Emission_Line"> </div>
