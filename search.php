@@ -15,7 +15,7 @@
 <body>
     <div class="navigation">
         <ul>
-            <a href="index.html"><h1>COMBINED</h1></a>
+            <a href="index.php"><h1>COMBINED</h1></a>
                 <li> <a href="profile.html">Profile</a> </li>
                 <li> <a href="dm.html">Messages</a> </li>
                 <li> <a href="friends.html">Friends</a> </li>
@@ -25,7 +25,7 @@
     <div class="Emission_Line"> </div>
 
     <div class="searchBox">
-        <input type="text" id="search" placeholder="Search for users" />
+        <input type="text" id="search" placeholder="Search for users" autocomplete="off" />
     </div>
 
     <div class="ResultBox" id="display">
