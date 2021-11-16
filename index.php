@@ -9,6 +9,7 @@ if (Login::isLoggedIn()) {
 }
 
 $name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
+
 $followingposts = DB::query('SELECT posts.id, posts.body, posts.likes, users.`username` FROM users, posts, followers
 WHERE posts.user_id = followers.user_id
 AND users.id = posts.user_id
@@ -105,7 +106,6 @@ if(isset($_POST['LikeAction']))
                 <div id="post-top">
                     <?php 
                     echo Post::link_add($posts['body']);
-                    echo $alreadyLiked;
                     ?>
                 </div>
                 <div id="post-bottom">
