@@ -9,7 +9,6 @@ if (Login::isLoggedIn()) {
 }
 
 $name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
-
 $followingposts = DB::query('SELECT posts.id, posts.body, posts.likes, users.`username` FROM users, posts, followers
 WHERE posts.user_id = followers.user_id
 AND users.id = posts.user_id
@@ -51,10 +50,10 @@ if(isset($_GET['unlike']))
     <div class="navigation">
         <ul>
             <a href="index.html"><h1>COMBINED</h1></a>
-                <li> <a href="profile.html">Profile</a> </li>
+                <li> <a href="profile.php?username=<?php echo $name;?>">Profile</a> </li>
                 <li> <a href="dm.html">Messages</a> </li>
                 <li> <a href="friends.html">Friends</a> </li>
-                <li> <a href="search.html">Search</a> </li>
+                <li> <a href="search.php">Search</a> </li>
         </ul>
     </div>
 
