@@ -25,7 +25,8 @@ if (isset($_GET['mid'])) {
         </form>
         <?php
 } else {
-
+ 
+        
 ?>
 <h1>My Messages</h1>
 <?php
