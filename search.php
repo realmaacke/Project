@@ -20,7 +20,6 @@ $name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'
    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
    <script type="text/javascript" src="script.js"></script>
     <script src="https://kit.fontawesome.com/6bfb37676a.js" crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/6bfb37676a.js" crossorigin="anonymous"></script>
     <title>COMBINED - SEARCH</title>
 </head>
 <body>

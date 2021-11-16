@@ -15,21 +15,10 @@ AND users.id = posts.user_id
 AND follower_id = :userid
 ORDER BY posts.id DESC;', array(':userid'=>$userid));
 
-if(isset($_GET['like']))
+if(isset($_POST['LikeAction']))
 {
-  $postid = $_POST['id'];
-
-  if (!DB::query('SELECT user_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$postid, ':userid'=>$userid))) 
-  {
-    DB::query('UPDATE posts SET likes=likes+1 WHERE id=:postid', array(':postid'=>$postid));
-    DB::query('INSERT INTO post_likes VALUES (\'\', :postid, :userid)', array(':postid'=>$postid, ':userid'=>$userid));
-  }
-}
-
-if(isset($_GET['unlike']))
-{
-  $postid = $_POST['id'];
-  POST::likePost($postid, $userid);
+  $post_id = $_GET['post'];
+  POST::likePost($post_id, $userid, "index.php");
 }
 
 
@@ -43,6 +32,7 @@ if(isset($_GET['unlike']))
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="Visual/style.css">
+       <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="https://kit.fontawesome.com/6bfb37676a.js" crossorigin="anonymous"></script>
     <title>COMBINED - HOME</title>
 </head>
@@ -59,9 +49,9 @@ if(isset($_GET['unlike']))
 
     <div class="flow">
      <?php foreach($followingposts as $posts) {
+      //  Check if post user got any profile image, if not use the default one in Visual/img/..
        $hasImage = false;
        $img = DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$posts['username']))[0]['profileimg'];
-       
        if(DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$posts['username']))[0]['profileimg'])
         {
          $hasImage = true;
@@ -69,7 +59,23 @@ if(isset($_GET['unlike']))
         else{
           $hasImage = false;
         }
-        
+        // Like 
+        $alreadyLiked = false;
+        if (DB::query('SELECT user_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$posts['id'], ':userid'=>$userid))) 
+        {
+          $alreadyLiked = true;
+        }
+        else {
+          $alreadyLiked = false;
+        }
+
+        $calculateLikes = DB::query('SELECT * FROM post_likes WHERE post_id=:targetID', array(':targetID'=>$posts['id']));
+        $ammountOfLikes = 0;
+        foreach($calculateLikes as $like){
+          $ammountOfLikes++;
+        }
+
+        // calculate how many comments the post have
         $comments = DB::query('SELECT * FROM comments WHERE post_id=:targetID',array(':targetID'=>$posts['id']));
         $ammountOfComments = 0;
         foreach($comments as $comment){
@@ -99,16 +105,49 @@ if(isset($_GET['unlike']))
                 <div id="post-top">
                     <?php 
                     echo Post::link_add($posts['body']);
+                    echo $alreadyLiked;
                     ?>
                 </div>
                 <div id="post-bottom">
-                <button type='submit' name='unlike' class='btn btn-primary'><?php echo $posts['likes']; ?><i class='far fa-heart'></i></button>
+                <form action="index.php?post=<?php echo $posts['id'];?>" method="POST">
+                <?php 
+                if(!$alreadyLiked){
+                  ?> <button type='submit'  name='LikeAction' value="LikeAction" class='btn btn-primary'><?php echo $ammountOfLikes;?> <i class='far fa-heart'></i></button> <?php 
+                } else {
+                  ?> <button type='submit'  name='LikeAction' value="LikeAction" class='btn btn-primary'><?php echo $ammountOfLikes;?> <i class='fas fa-heart'></i></button> <?php 
+                }
+                ?>
+                </form>
+
                 </div>
             </div>
         </div>
         <?php } ?>
     </div>
 
+
+    <script>
+window.onbeforeunload = function () {
+            var scrollPos;
+            if (typeof window.pageYOffset != 'undefined') {
+                scrollPos = window.pageYOffset;
+            }
+            else if (typeof document.compatMode != 'undefined' && document.compatMode != 'BackCompat') {
+                scrollPos = document.documentElement.scrollTop;
+            }
+            else if (typeof document.body != 'undefined') {
+                scrollPos = document.body.scrollTop;
+            }
+            document.cookie = "scrollTop=" + scrollPos;
+        }
+        window.onload = function () {
+            if (document.cookie.match(/scrollTop=([^;]+)(;|$)/) != null) {
+                var arr = document.cookie.match(/scrollTop=([^;]+)(;|$)/);
+                document.documentElement.scrollTop = parseInt(arr[1]);
+                document.body.scrollTop = parseInt(arr[1]);
+            }
+        }
+</script>
 </body>
 </html>
 
