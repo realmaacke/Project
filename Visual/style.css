@@ -149,6 +149,47 @@ color:#83e2b2;
     border-bottom: 2px solid rgb(47, 51, 63);
 }
 
+.PostComment{
+    margin: auto;
+    width: 83%;
+    height: 60px;
+    margin-bottom: 16px;
+    border-bottom: 2px solid rgb(47, 51, 63);
+}
+
+#commentPost{
+    float: right;
+    width: 12%;
+    height: 55px;
+    border-radius: 15px;
+    color: white;
+    padding: 10px;
+    border: 2px solid rgb(47, 51, 63);
+    background-color: rgb(46, 48, 54);
+    text-decoration: none;
+}
+
+#commentPost:hover{
+    border: 2px solid #83e2b2;
+    color: #83e2b2;
+}
+
+.textAreaComment{
+    background: none;
+    border: none;
+    float: left;
+    resize: none;
+    height: 55px;
+    background-color: rgb(51, 54, 65);
+    border: none;
+    padding: 10px;
+    border-radius: 15px;
+    word-wrap: break-word;
+    text-decoration: none;
+    outline: none;
+    color: white;
+}
+
 .C_item{
     width: 100%;
     height: auto;

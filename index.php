@@ -1,14 +1,19 @@
 <?php
 include('autoload.php');
 
-
 if (Login::isLoggedIn()) {  // checking if user is logged in and grabing the userid
   $userid = Login::isLoggedIn();
 } else {  // if not logged in Redirect to login.php
  Redirect::goto('login.php');
 }
-$name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username']; // Grabing name for profile redirect
 
+
+$hasImage = false;
+$alreadyLiked = false;
+
+$postIndex = 0;
+
+$name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username']; // Grabing name for profile redirect
 
 // querrying sql for people the user is following and grabing post related itmes(posts.id, posts.body, posts.likes)
 $followingposts = DB::query('SELECT posts.id, posts.body, posts.likes, users.`username` FROM users, posts, followers
@@ -17,10 +22,15 @@ AND users.id = posts.user_id
 AND follower_id = :userid 
 ORDER BY posts.id DESC;', array(':userid'=>$userid)); // ordering by id ascending
 
+
 if(isset($_POST['LikeAction'])) // if user submit likeAktion
 {
-  $post_id = $_GET['post']; // grabing post variable and defining for likepost function
+  $post_id = htmlspecialchars($_GET['post']); // grabing post variable and defining for likepost function
   POST::likePost($post_id, $userid, "index.php"); // sending the parameters to the function, with an redirect url after function is complete
+}
+if(isset($_POST['commentPost']))
+{
+  Comment::createComment(htmlspecialchars($_POST['text']),htmlspecialchars($_GET['post']), $userid);
 }
 
 ?> 
@@ -50,11 +60,8 @@ if(isset($_POST['LikeAction'])) // if user submit likeAktion
 
     <div class="flow">
      <?php 
-     $postIndex = 0;
      foreach($followingposts as $posts) { // foreach post as $post =>key
        // defining bools to prevent error
-       $hasImage = false;
-       $alreadyLiked = false;
         $postIndex++;
        // querrying for profile img, if $hasimage bool is true
        $img = DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$posts['username']))[0]['profileimg'];
@@ -121,6 +128,12 @@ if(isset($_POST['LikeAction'])) // if user submit likeAktion
             </div>
         </div>
       <div class="comments" id="<?php echo $postIndex; ?>">
+      <div class="PostComment">
+        <form action="index.php?post=<?php echo $posts['id'];?>" method="POST">
+            <textarea name="text" value="text" placeholder="Comment Something!" class="textAreaComment" id="" cols="80" rows="2"></textarea>
+            <button id='commentPost' name="commentPost" class='btn btn'>Send <i class="fas fa-arrow-right"></i></button>
+          </form>
+      </div>
         <?php 
         $commentIndex = 0;
         $comment = DB::query('SELECT * FROM comments WHERE post_id=:postid', array(':postid'=>$posts['id']));
@@ -137,17 +150,14 @@ if(isset($_POST['LikeAction'])) // if user submit likeAktion
        <?php }
         ?>
       </div>
-      <div class="PostComment">
-          <form action="index.php">
-            
-          </form>
-      </div>
         <?php }?>
     </div>
+</script>
+</body>
+</html>
 
-<script type="text/javascript">
-
-// script that opens the comment section
+<script>
+  // script that opens the comment section
 $("button").click(function() {  // grabing the button type.
     var commentValue = $(this).val(); // grabing the value of the button, (set to the postindex)
     row = $('#' + commentValue); 
@@ -166,6 +176,3 @@ $("button").click(function() {  // grabing the button type.
     }
 });
 </script>
-</body>
-</html>
-
