@@ -1,19 +1,38 @@
 <?php
 include('autoload.php');
 
-if (Login::isLoggedIn()) {  // checking if user is logged in and grabing the userid
+if (Login::isLoggedIn()) 
+{  // checking if user is logged in and grabing the userid
+
   $userid = Login::isLoggedIn();
-} else {  // if not logged in Redirect to login.php
+  
+} 
+else 
+{  // if not logged in Redirect to login.php
+
  Redirect::goto('login.php');
+}
+// Grabing name for profile redirect
+$name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
+
+// defining bools
+$hasImage = false;
+$alreadyLiked = false;
+$isAdmin = false;
+// checking if this->user got administrative permissions
+if(DB::query('SELECT user_id FROM administrator WHERE user_id=:userid', array(':userid'=>$userid)))
+{
+  $isAdmin = true;
+}
+else
+{
+  $isAdmin = false;
 }
 
 
-$hasImage = false;
-$alreadyLiked = false;
-
+// needed integear for comment controll in js
 $postIndex = 0;
 
-$name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username']; // Grabing name for profile redirect
 
 // querrying sql for people the user is following and grabing post related itmes(posts.id, posts.body, posts.likes)
 $followingposts = DB::query('SELECT posts.id, posts.body, posts.likes, users.`username` FROM users, posts, followers
@@ -31,6 +50,14 @@ if(isset($_POST['LikeAction'])) // if user submit likeAktion
 if(isset($_POST['commentPost']))
 {
   Comment::createComment(htmlspecialchars($_POST['text']),htmlspecialchars($_GET['post']), $userid);
+}
+
+if (isset($_POST['deletepost'])) {
+  if (DB::query('SELECT id FROM posts WHERE id=:postid AND user_id=:userid', array(':postid'=>$_GET['postid'], ':userid'=>$followerid))) {
+          DB::query('DELETE FROM posts WHERE id=:postid and user_id=:userid', array(':postid'=>$_GET['postid'], ':userid'=>$followerid));
+          DB::query('DELETE FROM post_likes WHERE post_id=:postid', array(':postid'=>$_GET['postid']));
+          echo 'Post deleted!';
+  }
 }
 
 ?> 
@@ -113,7 +140,7 @@ if(isset($_POST['commentPost']))
                     ?>
                 </div>
                 <div id="post-bottom">
-                <form action="index.php?post=<?php echo $posts['id'];?>" method="POST">
+                <form action="index.php?post=<?php echo $posts['id'];?>" method="POST" style="width:50%; float:left">
                 <?php 
                 if(!$alreadyLiked){
                   ?> <button type='submit'  name='LikeAction' value="LikeAction" class='btn btn-primary'><?php echo $ammountOfLikes;?> <i class='far fa-heart'></i></button> <?php 
@@ -121,8 +148,13 @@ if(isset($_POST['commentPost']))
                   ?> <button type='submit'  name='LikeAction' value="LikeAction" class='btn btn-primary'><?php echo $ammountOfLikes;?> <i class='fas fa-heart'></i></button> <?php 
                 }
                 ?>
-
                   <button type="button"  value="<?php echo $postIndex; ?>" id="CommentBTN" class='btn btn-primary'><?php echo $ammountOfComments; ?>  <i class="far fa-comments"></i></button>
+                <?php
+                if($isAdmin)
+                {
+                  ?> <button type='submit' name='AdminDelete' class='btn btn-primary'><i class="far fa-trash-alt"></i></button> <?php
+                }   
+                ?>
                 </form>
                 </div>
             </div>
@@ -150,7 +182,25 @@ if(isset($_POST['commentPost']))
        <?php }
         ?>
       </div>
-        <?php }?>
+      <?php        
+      ?>
+ <?php }
+
+if($postIndex < 1)
+{
+  ?> 
+  
+  <div class="startBox">
+    <h2>This is your Timeline where you can se the activity of those you follow.</h2>
+    <h3>to follow people use our <a href="search.php"> Search function</a> to look after Friends</h3>
+  </div>
+  
+  <?php
+}
+
+?>
+
+
     </div>
 </script>
 </body>
