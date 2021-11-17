@@ -121,7 +121,7 @@ if (isset($_GET['username']))
                 }
 
                 if (isset($_GET['postid']) && !isset($_POST['deletepost'])) {
-                        Post::likePost($_GET['postid'], $followerid);
+                        Post::likePost($_GET['postid'], $followerid, "profile.php'<?php echo $name; ?>'");
                 }
 
                 $posts = Post::displayPosts($userid, $username, $followerid);

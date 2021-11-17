@@ -141,6 +141,48 @@ margin-top: 10px;
 color:#83e2b2;
 }
 
+
+.comments{
+    width: 100%;
+    height: auto;
+    display: none;
+    border-bottom: 2px solid rgb(47, 51, 63);
+}
+
+.C_item{
+    width: 100%;
+    height: auto;
+    display: inline-block;
+}
+
+.C_item h2{
+    margin-left: 20px;
+    padding-bottom: 10px;
+    font-size: 1.2em;
+    color: white;
+    float:left;
+     margin-right: 20px
+}
+
+.C_item p{
+    justify-content:center;
+    color: white;
+}
+
+.C_item p:hover{
+    color:#83e2b2;
+}
+
+.C_item h2:hover{
+    color: #83e2b2;
+}
+
+.cmtLine{
+    width: 100%;
+    height: 1px;
+    border-bottom: 2px solid rgb(47, 51, 63);
+}
+
 /* Search Page */
 .Emission_Line{
     margin: auto;
