@@ -84,6 +84,18 @@ class Post {
                 return $topics;
         }
 
+        public static function DeletePost($id)
+        {
+                if(DB::query('SELECT id FROM posts WHERE id=:postid', array(':postid'=>$id))) // selecting the post
+                {
+                  DB::query('DELETE FROM comments WHERE post_id=:postid',array(':postid'=>$id));  // deleting comments associated with the post
+                  DB::query('DELETE FROM posts WHERE id=:A_POSTID',array(':A_POSTID'=>$id));  // deleting the post
+                  DB::query('DELETE FROM post_likes WHERE post_id=:A_POSTID',array('A_POSTID'=>$id)); //deleting the post likes
+                }
+        }
+
+
+
         public static function link_add($text) {
 
                 $text = explode(" ", $text);

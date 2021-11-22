@@ -1,24 +1,55 @@
 <?php
 include('autoload.php');  // loading all classes using spl loader
 
-
 /////////////////  CHECKING FOR PERMISSION  ////////////////////////////////
 if (Login::isLoggedIn())  { $userid = Login::isLoggedIn(); } 
 else {  Redirect::goto('login.php'); }
 
 $isAdmin = false;
-
 if(DB::query('SELECT user_id FROM administrator WHERE user_id=:userid', array(':userid'=>$userid)))
 { $isAdmin = true; }
 else 
 { $isAdmin = false; }
 
-///////////////////////////////////////////////////////
+/////////////////  Admin Permissions  ////////////////////////////////
 
-// defining start Variables
+if(isset($_POST['A_DeleteComment']))
+{
+  if($isAdmin)
+  {
+    authorization::AdminDeleteComment(htmlspecialchars($_GET['comment']));
+    Redirect::goto('index.php');
+  } else 
+  {
+    Redirect::goto('index.php');
+  }
+}
+if(isset($_POST['A_DeletePost']))
+{
+ if($isAdmin)
+ {
+    authorization::AdminDeletePost(htmlspecialchars($_GET['post']));
+    Redirect::goto('index.php');
+ } else 
+ {
+  Redirect::goto('index.php');
+ }
+}
+
+/////////////////  COMMENT OWNER Permissions  ///////////////////
+
+
+if(isset($_POST['self_DeleteComment']))
+{
+  authorization::CommentDelete(htmlspecialchars($_GET['comment']));
+}
+///////////////// Website Functions  ////////////////////////////////
+
+// defining Variables
 $name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
 $hasImage = false;
 $alreadyLiked = false;
+$isPostOwner = false;
 $postIndex = 0;
 
 
@@ -27,12 +58,13 @@ $followingposts = DB::query('SELECT posts.id, posts.body, posts.likes, users.`us
 WHERE posts.user_id = followers.user_id 
 AND users.id = posts.user_id  
 AND follower_id = :userid 
-ORDER BY posts.id DESC;', array(':userid'=>$userid)); // ordering by id ascending
+ORDER BY posts.id DESC;', array(':userid'=>$userid)); 
 
 
-if(isset($_POST['LikeAction'])) // if user submit likeAktion
+// handling form submition
+if(isset($_POST['LikeAction']))
 {
-  POST::likePost(htmlspecialchars($_GET['post']), $userid); // sending the parameters to the function, with an redirect url after function is complete
+  POST::likePost(htmlspecialchars($_GET['post']), $userid);
 }
 if(isset($_POST['commentPost']))
 {
@@ -64,7 +96,6 @@ if(isset($_POST['commentPost']))
                 <li> <a href="search.php">Search</a> </li>
         </ul>
     </div>
-
     <div class="flow">
      <?php 
      foreach($followingposts as $posts) { // foreach post as $post =>key
@@ -134,10 +165,10 @@ if(isset($_POST['commentPost']))
                 {
                   ?> 
                   <form action="index.php?postid=<?php $posts['id'];?>" method="POST">
-                      <button type='submit' name='DELETE' class='btn btn-primary'><i class="far fa-trash-alt"></i></button>
+                      <button type='submit' style='color:red;' name='A_DeletePost' class='btn btn-primary'><i class="far fa-trash-alt"></i></button>
                   </form> 
                 <?php
-                }   
+                }
                 ?>
                 </form>
                 </div>
@@ -153,17 +184,32 @@ if(isset($_POST['commentPost']))
         <?php 
         $commentIndex = 0;
         $comment = DB::query('SELECT * FROM comments WHERE post_id=:postid', array(':postid'=>$posts['id']));
+        $commentOwner = false;
         foreach($comment as $cmt)
         { 
           $commentIndex++;
           $cmtName = DB::query('SELECT username FROM users WHERE id=:userid',array(':userid'=>$cmt['user_id']))[0]['username'];
+          if($cmt['user_id'] == $userid){
+            $commentOwner = true;
+          }
           ?>
         <div class="C_item">
+          <?php              
+          if($commentOwner && !$isAdmin)
+             { ?> 
+               <form style="float:right; padding-right:50px;" action="index.php?comment=<?php echo $cmt['id'];?>" method="POST">
+                      <button type='submit' style="color:red; float:right" name='self_DeleteComment' class='btn btn'><i class="far fa-trash-alt"></i></button>
+                  </form> 
+               <?php
+             } ?>
             <h2 ><a href="profile.php?username=<?php echo $cmtName;?>"> <?php echo $cmtName ?></a> -</h2>
             <p ><?php echo Post::link_add($cmt['comment']); ?>
-             <?php if($isAdmin)
+             <?php 
+             if($isAdmin)
                 {?>
-                 <a href="index.php?commentid=<?php echo htmlspecialchars($cmt['id']);?>"><i class="far fa-trash-alt"></i></a>
+                 <form style="float:right; padding-right:50px;" action="index.php?comment=<?php echo $cmt['id'];?>" method="POST">
+                      <button type='submit' style="color:red;" name='A_DeleteComment' class='btn btn'><i class="far fa-trash-alt"></i></button>
+                  </form> 
                  <?php
                 } ?> </p>
             <?php 

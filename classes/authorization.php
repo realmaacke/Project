@@ -62,4 +62,26 @@ class authorization {
             Redirect::goto('login.php?error');
         }
     }
+
+    public static function CommentDelete($id)
+    {
+        DB::query('DELETE FROM comments WHERE id=:cmtID',array(':cmtID'=>$id));  // deleting comments associated with the post  
+    }
+
+    public static function AdminDeleteComment($id)
+    {
+        DB::query('DELETE FROM comments WHERE id=:cmtID',array(':cmtID'=>$id));  // deleting comments associated with the post  
+    }
+
+    public static function AdminDeletePost($id)
+    {
+        if(DB::query('SELECT id FROM posts WHERE id=:postid', array(':postid'=>$id))) // selecting the post
+        {
+          DB::query('DELETE FROM comments WHERE post_id=:postid',array(':postid'=>$id));  // deleting comments associated with the post
+          DB::query('DELETE FROM posts WHERE id=:A_POSTID',array(':A_POSTID'=>$id));  // deleting the post
+          DB::query('DELETE FROM post_likes WHERE post_id=:A_POSTID',array('A_POSTID'=>$id)); //deleting the post likes
+        }
+    }
+
+
 }
