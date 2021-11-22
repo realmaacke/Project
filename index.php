@@ -1,36 +1,24 @@
 <?php
-include('autoload.php');
+include('autoload.php');  // loading all classes using spl loader
 
-if (Login::isLoggedIn()) 
-{  // checking if user is logged in and grabing the userid
 
-  $userid = Login::isLoggedIn();
-  
-} 
+/////////////////  CHECKING FOR PERMISSION  ////////////////////////////////
+if (Login::isLoggedIn())  { $userid = Login::isLoggedIn(); } 
+else {  Redirect::goto('login.php'); }
+
+$isAdmin = false;
+
+if(DB::query('SELECT user_id FROM administrator WHERE user_id=:userid', array(':userid'=>$userid)))
+{ $isAdmin = true; }
 else 
-{  // if not logged in Redirect to login.php
+{ $isAdmin = false; }
 
- Redirect::goto('login.php');
-}
-// Grabing name for profile redirect
+///////////////////////////////////////////////////////
+
+// defining start Variables
 $name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
-
-// defining bools
 $hasImage = false;
 $alreadyLiked = false;
-$isAdmin = false;
-// checking if this->user got administrative permissions
-if(DB::query('SELECT user_id FROM administrator WHERE user_id=:userid', array(':userid'=>$userid)))
-{
-  $isAdmin = true;
-}
-else
-{
-  $isAdmin = false;
-}
-
-
-// needed integear for comment controll in js
 $postIndex = 0;
 
 
@@ -44,21 +32,13 @@ ORDER BY posts.id DESC;', array(':userid'=>$userid)); // ordering by id ascendin
 
 if(isset($_POST['LikeAction'])) // if user submit likeAktion
 {
-  $post_id = htmlspecialchars($_GET['post']); // grabing post variable and defining for likepost function
-  POST::likePost($post_id, $userid, "index.php"); // sending the parameters to the function, with an redirect url after function is complete
+  POST::likePost(htmlspecialchars($_GET['post']), $userid); // sending the parameters to the function, with an redirect url after function is complete
 }
 if(isset($_POST['commentPost']))
 {
   Comment::createComment(htmlspecialchars($_POST['text']),htmlspecialchars($_GET['post']), $userid);
 }
 
-if (isset($_POST['deletepost'])) {
-  if (DB::query('SELECT id FROM posts WHERE id=:postid AND user_id=:userid', array(':postid'=>$_GET['postid'], ':userid'=>$followerid))) {
-          DB::query('DELETE FROM posts WHERE id=:postid and user_id=:userid', array(':postid'=>$_GET['postid'], ':userid'=>$followerid));
-          DB::query('DELETE FROM post_likes WHERE post_id=:postid', array(':postid'=>$_GET['postid']));
-          echo 'Post deleted!';
-  }
-}
 
 ?> 
 
@@ -152,7 +132,11 @@ if (isset($_POST['deletepost'])) {
                 <?php
                 if($isAdmin)
                 {
-                  ?> <button type='submit' name='AdminDelete' class='btn btn-primary'><i class="far fa-trash-alt"></i></button> <?php
+                  ?> 
+                  <form action="index.php?postid=<?php $posts['id'];?>" method="POST">
+                      <button type='submit' name='DELETE' class='btn btn-primary'><i class="far fa-trash-alt"></i></button>
+                  </form> 
+                <?php
                 }   
                 ?>
                 </form>
@@ -176,8 +160,17 @@ if (isset($_POST['deletepost'])) {
           ?>
         <div class="C_item">
             <h2 ><a href="profile.php?username=<?php echo $cmtName;?>"> <?php echo $cmtName ?></a> -</h2>
-            <p ><?php echo Post::link_add($cmt['comment']); ?></p>
+            <p ><?php echo Post::link_add($cmt['comment']); ?>
+             <?php if($isAdmin)
+                {?>
+                 <a href="index.php?commentid=<?php echo htmlspecialchars($cmt['id']);?>"><i class="far fa-trash-alt"></i></a>
+                 <?php
+                } ?> </p>
+            <?php 
+            $commentUser = $cmt['user_id'];
+            ?>
             <div class="cmtLine"></div>
+            <hr>
         </div>
        <?php }
         ?>
@@ -224,5 +217,18 @@ $("button").click(function() {  // grabing the button type.
     else{
       return;
     }
+});
+</script>
+
+<script>
+  $("delete").click(function() 
+{ 
+    $.ajax({
+    type: "POST",
+    url: url,
+    data: "DELETE",
+    success: success,
+    dataType: dataType
+  });
 });
 </script>
