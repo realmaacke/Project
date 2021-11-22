@@ -1,5 +1,4 @@
 <?php
-
 include('autoload.php');
 
 if (Login::isLoggedIn()) {
@@ -16,8 +15,6 @@ $isFollowing = False;
 $hasImage = False;
 
 $localUsername = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$validLogin))[0]['username'];
-
-
 
 if (isset($_POST['uploadprofileimg'])) 
 {
@@ -103,11 +100,7 @@ if (isset($_GET['username']))
                 }
 
                 if (isset($_POST['deletepost'])) {
-                        if (DB::query('SELECT id FROM posts WHERE id=:postid AND user_id=:userid', array(':postid'=>$_GET['postid'], ':userid'=>$followerid))) {
-                                DB::query('DELETE FROM posts WHERE id=:postid and user_id=:userid', array(':postid'=>$_GET['postid'], ':userid'=>$followerid));
-                                DB::query('DELETE FROM post_likes WHERE post_id=:postid', array(':postid'=>$_GET['postid']));
-                                echo 'Post deleted!';
-                        }
+                        authorization::AdminDeletePost($_GET['postid']);
                 }
 
 
@@ -135,230 +128,29 @@ if (isset($_GET['username']))
     Redirect::goto('index.php');
 } ?>
 
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Profile - COMBINED</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="GUI/index-style.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
-    <link rel="stylesheet" href="assets/fonts/simple-line-icons.min.css">
-    <link rel="stylesheet" href="assets/css/vanilla-zoom.min.css">
-    <link rel="stylesheet" href="GUI/profile.css">
-<script src="assets/bootstrap/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-<script src="assets/js/vanilla-zoom.js"></script>
-<script src="assets/js/theme.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script src="https://kit.fontawesome.com/6bfb37676a.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Visual/style.css">
+       <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+       <link rel="icon" type="image/x-icon" href="Visual\img\favicon.ico">
+    <script src="https://kit.fontawesome.com/6bfb37676a.js" crossorigin="anonymous"></script>
+    <title>COMBINED PROFILE - <?php echo $localUsername?> </title>
 </head>
-
-
 <body>
-    <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
-        <div class="container">
-            <a class="navbar-brand logo" href="index.php">COMBINED</a>
-            <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
-                <span class="visually-hidden">Toggle navigation</span>
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navcol-1">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html">SEARCH</a></li>
-                    <li class="nav-item"><a class="nav-link" href="features.html">DISCOVER<br></a></li>
-                    <li class="nav-item"><a class="nav-link active" href="pricing.html">MESSAGES</a></li>
-                    <li class="nav-item"><a class="nav-link" href="profile.php?username=<?php echo $localUsername; ?>">PROFILE<br></a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <main class="page pricing-table-page" style="height: 100%;">
-        <section style="height: 1041px;margin-top: -29px;">
-            <div class="container" style="height: 765px;min-height: 15px;margin-top: 61px;width: 1343px;">
-                <div class="row">
-                    <div class="col-md-6" style="height: 872px;">
-                        <div class="card"
-                            style="height: 457px;width: 516px;margin-left: 48px;box-shadow: 5px 5px rgb(230,234,237);">
-                            <div class="card-body">
-                                <div style="height: 244px;">
-                                    <div style="height: 177px;width: 203px;margin: auto;margin-top: 2px;">
-
-                                    <?php
-                                    if($hasImage)
-                                    {
-                                        ?> <img src="<?php echo $img; ?>"  style="width: 100%; height: 100%; filter: blur(0px); box-shadow: 0px 34px 57px -12px rgba(161,161,161,1);
-                                        -webkit-box-shadow: 0px 34px 57px -12px rgba(161,161,161,1);
-                                        -moz-box-shadow: 0px 34px 57px -12px rgba(161,161,161,1);" >  <?php 
-                                    }else 
-                                    {
-                                        ?> <img src="assets/avatar.png"  style="width: 100%;height: 100%;filter: blur(0px); box-shadow: 0px 34px 57px -12px rgba(161,161,161,1);
-                                        -webkit-box-shadow: 0px 34px 57px -12px rgba(161,161,161,1);
-                                        -moz-box-shadow: 0px 34px 57px -12px rgba(161,161,161,1);"" >  <?php
-                                    }
-                                    
-                                    ?>
-                                    </div>
-                                    <div style="height: 64px;">
-                                    <!-- verified here -->
-                                    <p style="float: right"></p>    
-                                    <h1 style="margin-top: 9px;"><?php echo "@",$username; ?></h1>
-                                        
-                                    </div>
-                                </div>
-                                <div style="height: 192px;">
-                                    <div id="stripe_white"></div>
-                                    <div style="height: 29px;margin-top: 14px;">
-                                        <p><?php echo $postvalue; ?> Posts <?php  echo $clientFollow;?> Following <?php echo $followervalue; ?> Followers</p>
-                                    </div>
-                                    <div style="height: 141px;">
-                                        <div id="stripe_white"></div>
-                                        <div style="height: 103px;margin: auto;width: 199px;">
-
-
-                                    <form action="profile.php?username=<?php echo $username; ?>" method="post">
-                                    <?php if ($userid != $followerid) 
-                                    {
-                                        ?>
-
-                                        <?php
-                                        if ($isFollowing) 
-                                        {
-                                                echo '<input class="btn btn-primary" style="margin-left: 45px;margin-top: 10px;" type="submit" name="unfollow" value="Unfollow">';
-                                        } else {
-                                            echo '<input class="btn btn-primary" style="margin-left: 55px;margin-top: 10px;" type="submit" name="follow" value="Follow">';
-                                        }
-                                    }
-                                    ?>
-                                    </form>
-                                    <?php 
-                                    if($userid != $followerid)
-                                    { ?>
-                                         <button class="btn btn-primary" type="button" style="margin-left: 46px;margin-top: 3px;">Message</button>
-                                    <?php } ?>
-                                       </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card"
-                            style="width: 516px;height: 275px;margin-left: 48px;margin-top: 25px;box-shadow: 5px 5px rgb(230,234,237);">
-                            <div class="card-body" style="height: 316px;">
-                                <div style="height: 68px;margin-top: 13px;">
-                                    <h1 id="settings"><a id="SettingsBTN"> <i class="fas fa-sliders-h"></i> Settings</a></h1>
-                                    <div id="stripe_white"></div>
-                                </div>
-                                <div style="height: 68px;margin-top: 13px;">
-                                    <h1 id="settings"><a href="report.php"> <i class="fas fa-bug"></i> Report a bug</a></h1>
-                                    <div id="stripe_white"></div>
-                                </div>
-                                <div style="height: 68px;margin-top: 13px;">
-                                    <h1 id="settings"><a id="signoutBTN" style="cursor: pointer;">  <i class="fas fa-sign-out-alt"></i> Sign out</a></h1>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6" style="height: 800px;">
-                        <div class="card" style="height: 759px;box-shadow: 5px 5px rgb(230,234,237);">
-                                            <!-- posts -->
-                                            <?php 
-                                            echo Post::displayPosts($userid, $username, $validLogin);
-                                            ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-
-
-<!-- Sign out modal -->
-<div id="signoutModal" class="modal">
-
-  <!-- Modal content -->
-    <div class="modal-content">
-      <span class="close">&times;</span>
-
-      <h1 style="font-size: 1.2em">Sign out </h1>
-      <hr>
-      <br>
-        <form action="profile.php" method="post">
-                <input type="checkbox" name="alldevices" value="alldevices"> Sign out of all devices?<br />
-                <br>
-                <input type="submit" name="confirm" value="Sign out">
-        </form>
+<div class="navigation">
+        <ul>
+            <a href="index.php"><h1>COMBINED </h1></a>
+                <li> <a href="profile.php?username=<?php echo $localUsername;?>">Profile</a> </li>
+                <li> <a href="dm.html">Messages</a> </li>
+                <li> <a href="friends.html">Friends</a> </li>
+                <li> <a href="search.php">Search</a> </li>
+        </ul>
     </div>
-</div> 
-
-
-<!-- Settings out modal -->
-<div id="settingsModal" class="modal">
-
-  <!-- Modal content -->
-    <div class="modal-content">
-      <a id="close">&times;</a>
-
-      <h1 style="font-size: 1.2em">Account Settings</h1>
-      <hr>
-      <br>
-      <form action="profile.php?username=<?php echo $username ?>" method="post" enctype="multipart/form-data">
-        Upload a profile image:
-        <input type="file" name="profileimg">
-        <input type="submit" name="uploadprofileimg" value="Upload Image">
-</form>
-    </div>
-</div> 
-
-
 </body>
 </html>
-
-<!-- Sign out modal -->
-<script>
-    var view = document.getElementById("settingsModal");
-
-    document.getElementById("SettingsBTN").addEventListener("click", function() 
-    {
-        view.style.display = "block";
-    }); 
-
-    document.getElementById("close").addEventListener("click", function() 
-    {
-        view.style.display = "none";
-    }); 
-    
-
-</script>
-
-
-    
-<!-- settings modal -->
-<script>
-  // Get the modal
-var modal = document.getElementById("signoutModal");
-
-// Get the button that opens the modal
-var btn = document.getElementById("signoutBTN");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on the button, open the modal
-btn.onclick = function() {
-  modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-} 
-</script>
