@@ -1,9 +1,9 @@
-<?php 
+<?php
 
 class authorization {
     public static function register($username, $password, $email)
     {
-        
+
         if (!DB::query('SELECT username FROM users WHERE username=:username', array(':username'=>$username))) {
 
             if (strlen($username) >= 3 && strlen($username) <= 32) {
@@ -16,7 +16,7 @@ class authorization {
 
                             if (!DB::query('SELECT email FROM users WHERE email=:email', array(':email'=>$email))) {
 
-                                    DB::query('INSERT INTO users VALUES (\'\', :username, :password, :email, \'0\', \'\')', array(':username'=>$username, ':password'=>password_hash($password, PASSWORD_BCRYPT), ':email'=>$email));
+                                    DB::query('INSERT INTO users VALUES (\'\', :username, :password, :email, \'0\', \'\', \'\')', array(':username'=>$username, ':password'=>password_hash($password, PASSWORD_BCRYPT), ':email'=>$email));
                                     Redirect::goto("index.php");
                             } else {
                                Redirect::goto('register.php?emailError');
@@ -44,7 +44,7 @@ class authorization {
         if(DB::query('SELECT username FROM users WHERE username=:username', array(':username'=>$username)))
         {
            // Grabing password from the username to compare if it is correct
-          if(password_verify($password, DB::query('SELECT password FROM users WHERE username=:username', array(':username'=>$username))[0]['password'])) 
+          if(password_verify($password, DB::query('SELECT password FROM users WHERE username=:username', array(':username'=>$username))[0]['password']))
           {
             $cstrong = true;
             $token = bin2hex(openssl_random_pseudo_bytes(64, $cstrong));
@@ -52,8 +52,8 @@ class authorization {
             DB::query('INSERT INTO login_tokens VALUES (\'\', :token, :user_id)', array('token'=>sha1($token), ':user_id'=>$user_id));
            setcookie("CMBNID", $token, time() + 60 * 60 * 24 * 7, '/', NULL, NULL, TRUE);
            Redirect::goto('index.php');
-          } 
-          else 
+          }
+          else
           {
             Redirect::goto('login.php?error');
           }
@@ -65,12 +65,12 @@ class authorization {
 
     public static function CommentDelete($id)
     {
-        DB::query('DELETE FROM comments WHERE id=:cmtID',array(':cmtID'=>$id));  // deleting comments associated with the post  
+        DB::query('DELETE FROM comments WHERE id=:cmtID',array(':cmtID'=>$id));  // deleting comments associated with the post
     }
 
     public static function AdminDeleteComment($id)
     {
-        DB::query('DELETE FROM comments WHERE id=:cmtID',array(':cmtID'=>$id));  // deleting comments associated with the post  
+        DB::query('DELETE FROM comments WHERE id=:cmtID',array(':cmtID'=>$id));  // deleting comments associated with the post
     }
 
     public static function AdminDeletePost($id)
