@@ -1,134 +1,70 @@
-<?php
+<?php 
 include('autoload.php');
+/////////////////  CHECKING FOR PERMISSION  ////////////////////////////////
+if (Login::isLoggedIn())  { $userid = Login::isLoggedIn(); } 
+else {  Redirect::goto('login.php'); }
 
-if (Login::isLoggedIn()) {
-    $validLogin = Login::isLoggedIn();
-} else {
-   Redirect::goto('login.php');
-}
+$isAdmin = false;
+if(DB::query('SELECT user_id FROM administrator WHERE user_id=:userid', array(':userid'=>$userid)))
+{ $isAdmin = true; }
+else 
+{ $isAdmin = false; }
 
-//standard variables
-$localUsername = "";
-$username = "";
-$verified = False;
-$isFollowing = False;
-$hasImage = False;
-
-$localUsername = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$validLogin))[0]['username'];
-
-if (isset($_POST['uploadprofileimg'])) 
+/////////////////  Admin Permissions  ////////////////////////////////
+if(isset($_POST['A_DeleteComment']))
 {
-    Image::uploadImage('profileimg', "UPDATE users SET profileimg = :profileimg WHERE id=:userid", array(':userid'=>$userid));
-}
-
-
-if (isset($_GET['username'])) 
-{
-        if (DB::query('SELECT username FROM users WHERE username=:username', array(':username'=>$_GET['username']))) 
-        {    
-                // Declaring variables based on querys
-                $username = DB::query('SELECT username FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['username'];
-                $userid = DB::query('SELECT id FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['id'];
-                $verified = DB::query('SELECT verified FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['verified'];
-                $img = DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['profileimg'];
-                $followerid = Login::isLoggedIn();
-
-
-                // ammount of posts u made
-                $postAmmount = DB::query('SELECT * FROM POSTS WHERE user_id=:userid', array(':userid'=>$userid));
-                $postvalue = 0;
-
-                foreach($postAmmount as $postAmmounts)
-                {
-                        $postvalue++;
-                }
-
-                // Ammount that follows u 
-                $ammountofFollowers = DB::query('SELECT * FROM followers WHERE user_id =:userid', array(':userid'=>$userid));
-                $followervalue = 0;     // follower value == null
-                foreach($ammountofFollowers as $ammount) // for each follower ++;
-                {
-                 $followervalue++;
-                }
-                // ammount that u follow
-                $selfFollow = DB::query('SELECT * FROM followers WHERE follower_id =:userid', array(':userid'=>$userid));
-                $clientFollow = 0;     // follower value == null
-                foreach($selfFollow as $ammount) // for each follower ++;
-                {
-                 $clientFollow++;
-                }
-
-                if(DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$_GET['username']))[0]['profileimg'])
-                {
-                        $hasImage = true;
-                }
-                else{
-                        $hasImage = false;
-                }
-
-                if (isset($_POST['follow'])) {
-
-                        if ($userid != $followerid) {
-
-                                if (!DB::query('SELECT follower_id FROM followers WHERE user_id=:userid AND follower_id=:followerid', array(':userid'=>$userid, ':followerid'=>$followerid))) {
-                                        if ($followerid == 6) {
-                                                DB::query('UPDATE users SET verified=1 WHERE id=:userid', array(':userid'=>$userid));
-                                        }
-                                        DB::query('INSERT INTO followers VALUES (\'\', :userid, :followerid)', array(':userid'=>$userid, ':followerid'=>$followerid));
-                                } else {
-                                        echo 'Already following!';
-                                }
-                                $isFollowing = True;
-                        }
-                }
-                if (isset($_POST['unfollow'])) {
-
-                        if ($userid != $followerid) {
-
-                                if (DB::query('SELECT follower_id FROM followers WHERE user_id=:userid AND follower_id=:followerid', array(':userid'=>$userid, ':followerid'=>$followerid))) {
-                                        if ($followerid == 6) {
-                                                DB::query('UPDATE users SET verified=0 WHERE id=:userid', array(':userid'=>$userid));
-                                        }
-                                        DB::query('DELETE FROM followers WHERE user_id=:userid AND follower_id=:followerid', array(':userid'=>$userid, ':followerid'=>$followerid));
-                                }
-                                $isFollowing = False;
-                        }
-                }
-                if (DB::query('SELECT follower_id FROM followers WHERE user_id=:userid AND follower_id=:followerid', array(':userid'=>$userid, ':followerid'=>$followerid))) {
-                        //echo 'Already following!';
-                        $isFollowing = True;
-                }
-
-                if (isset($_POST['deletepost'])) {
-                        authorization::AdminDeletePost($_GET['postid']);
-                }
-
-
-                if (isset($_POST['post'])) {
-                        if ($_FILES['postimg']['size'] == 0) {
-                                Post::createPost($_POST['postbody'], Login::isLoggedIn(), $userid);
-                        } else {
-                                $postid = Post::createImgPost($_POST['postbody'], Login::isLoggedIn(), $userid);
-                                Image::uploadImage('postimg', "UPDATE posts SET postimg=:postimg WHERE id=:postid", array(':postid'=>$postid));
-                        }
-                }
-
-                if (isset($_GET['postid']) && !isset($_POST['deletepost'])) {
-                        Post::likePost($_GET['postid'], $followerid, "profile.php'<?php echo $name; ?>'");
-                }
-
-                $posts = Post::displayPosts($userid, $username, $followerid);
-
-
-        } else 
-        {
-                die('User not found!');
-        }
-} else {
+  if($isAdmin)
+  {
+    authorization::AdminDeleteComment(htmlspecialchars($_GET['comment']));
     Redirect::goto('index.php');
-} ?>
+  } else 
+  {
+    Redirect::goto('index.php');
+  }
+}
+if(isset($_POST['A_DeletePost']))
+{
+        if($isAdmin)
+        {
+                authorization::AdminDeletePost(htmlspecialchars($_GET['post']));
+                Redirect::goto('index.php');
+        }
+         else 
+        {
+                 Redirect::goto('index.php'); 
+        }
+}
+
+if(isset($_GET['username'])) 
+{
+        /////////////////  Users  ////////////////////////////////
+        // local user
+        $name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
+        /////////////////  Targeted User  ////////////////////////////////
+        $targetedUser = DB::query('SELECT * FROM users WHERE username=:username',array(':username'=>htmlspecialchars($_GET['username'])));
+
+        $t_username = $targetedUser[0]['username'];
+        $t_id = $targetedUser[0]['id'];
+        $t_profilePic = $targetedUser[0]['profileimg'];
+
+        $hasImage = false;
+        if($t_profilePic != null)
+        {
+         $hasImage = true;
+        }
+        
+        /////////////////  Calculating ammount of POSTS/FOLLOWERS/FOLLOWING  ////////////////////////////////
+        $FollowingAmmount = DB::query('SELECT * FROM followers WHERE user_id=:userid',array(':userid'=>$t_id));
+        $FollowersAmmount = DB::query('SELECT * FROM followers WHERE follower_id=:userid',array(':userid'=>$t_id));
+        $PostsAmmount = DB::query('SELECT * FROM posts WHERE user_id=:userid',array(':userid'=>$t_id));
+} 
+else 
+{
+        Redirect::goto('index.php');
+}
 
 
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -140,17 +76,46 @@ if (isset($_GET['username']))
        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
        <link rel="icon" type="image/x-icon" href="Visual\img\favicon.ico">
     <script src="https://kit.fontawesome.com/6bfb37676a.js" crossorigin="anonymous"></script>
-    <title>COMBINED PROFILE - <?php echo $localUsername?> </title>
+    <title>COMBINED PROFILE - <?php echo $t_username?> </title>
 </head>
 <body>
+
 <div class="navigation">
         <ul>
             <a href="index.php"><h1>COMBINED </h1></a>
-                <li> <a href="profile.php?username=<?php echo $localUsername;?>">Profile</a> </li>
+                <li> <a href="profile.php?username=<?php echo $name;?>">Profile</a> </li>
                 <li> <a href="dm.html">Messages</a> </li>
                 <li> <a href="friends.html">Friends</a> </li>
                 <li> <a href="search.php">Search</a> </li>
         </ul>
-    </div>
+</div>
+
+<div class="P_Main">
+        <div class="P_left">
+                <div class="P_L_T">
+                <button id="edit-btn"> EDIT PROFILE</button>
+                        <div class="P_L_T_I">
+                        <img src="Visual/img/avatar.png" alt="" width="100%" height="100%">
+                        </div>
+                
+                        <div class="P_L_T_S">
+                        <hr>
+                        <div class="P_text">
+                        <h2>NickName</h2>
+                        <h5>@Username</h5>
+                        <p>123 followers | 123 Following | 123 Posts</p>
+                        </div>
+                        </div>
+                </div>
+                <div class="P_L_B">
+                </div>
+        </div>
+
+        <div class="P_right">
+                
+        </div>
+</div>
+
+
 </body>
 </html>

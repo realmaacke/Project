@@ -343,30 +343,59 @@ a:hover{
 
 /* PROFILE PAGE */
 
-.divider{
-    width: 100%;
-    height: 20px;
-    padding-top: 20px;
-}
 
 .P_Main{
-    width: 100%;
-    height: 400px;
+    width: 90%;
+    height: 800px;
     margin: auto;
-    margin-top: 120px;
-    background-color: aliceblue;
+    margin-top: 60px;
 }
 
-.P_personal{
-float:left;
-width: 50%;
-height: 100%;
-background-color: wheat;
+.P_left{
+    float: left;
+    width: 45%;
+    height: 100%;
 }
 
-.P_feed{
-float:right;
-width: 50%;
-height: 100%;
-background-color: yellow;
+.P_right{
+    float:right;
+    width: 45%;
+    height: 100%;
+    background-color: aqua;
+}
+
+.P_L_T{
+    width: 100%;
+    height: 55%;
+    padding-top: 20px;
+    background-color: rgb(240, 240, 240);
+}
+
+.P_L_T_I{
+    overflow: hidden;
+    width: 26%;
+    margin-left: 2%;
+    height: 44%;
+    background-color:#83e2b2;
+}
+
+.P_L_T_S{
+    width: 100%;
+    height: 46%;
+    background-color: green;
+}
+
+.P_L_B{
+    width: 100%;
+    height: 45%;
+    background-color: yellow;
+}
+
+#edit-btn{
+    float:right;
+    
+}
+
+p{
+    color: white;
 }
