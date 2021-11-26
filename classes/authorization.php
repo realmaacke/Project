@@ -63,6 +63,18 @@ class authorization {
         }
     }
 
+    public static function ValidateAdmin($id)
+    {
+        if(DB::query('SELECT user_id FROM administrator WHERE user_id=:userid', array(':userid'=>$id)))
+        { 
+           return true;
+        }
+        else
+        { 
+            return false;
+        }
+    }
+
     public static function CommentDelete($id)
     {
         DB::query('DELETE FROM comments WHERE id=:cmtID',array(':cmtID'=>$id));  // deleting comments associated with the post
@@ -82,6 +94,4 @@ class authorization {
           DB::query('DELETE FROM post_likes WHERE post_id=:A_POSTID',array('A_POSTID'=>$id)); //deleting the post likes
         }
     }
-
-
 }
