@@ -11,7 +11,6 @@ class Comment {
                 } else {
                         DB::query('INSERT INTO comments VALUES (\'\', :comment, :userid, NOW(), :postid)', array(':comment'=>$commentBody, ':userid'=>$userId, ':postid'=>$postId));
                 }
-
         }
 
         public static function displayComments($postId) {

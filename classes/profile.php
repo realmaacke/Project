@@ -45,18 +45,6 @@ class Profile
         return $returnValue;
     }
 
-    public static function FollowAction($t_id, $userid,$action)
-    {
-        if($action)
-        {
-            DB::query('INSERT INTO followers VALUES (\'\', :user_id, :follower_id)', array(':user_id'=>$t_id, ':follower_id'=>$userid));
-        }
-        if(!$action)
-        {
-         DB::query('DELETE FROM followers WHERE user_id=:userid AND follower_id=:followerid',array(':userid'=>$t_id, ':followerid'=>$userid));
-        }
-    }
-
     public static function CheckifFollowing($userid, $t_id)
     {
         if(DB::query('SELECT follower_id FROM followers WHERE user_id=:targetid AND follower_id=:userid', array(':targetid'=>$t_id,':userid'=>$userid)))
@@ -65,6 +53,45 @@ class Profile
         }
         else{
             return false;
+        }
+    }
+
+    public static function CheckifLiked($userid, $postid)
+    {
+        if (DB::query('SELECT user_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$postid, ':userid'=>$userid))) 
+        {
+         return true;
+        }
+        else 
+        {
+         return false;
+        }
+    }
+
+    public static function Ammount($postid, $type)
+    {
+        if($type)   // likes
+        {
+            $calculateLikes = DB::query('SELECT * FROM post_likes WHERE post_id=:targetID', array(':targetID'=>$postid));
+            $ammountOfLikes = 0;
+
+            foreach($calculateLikes as $like)
+            {  
+                $ammountOfLikes++;
+            }
+            return $ammountOfLikes;
+        }
+
+        if(!$type)  // comments
+        {
+            $calculateComments = DB::query('SELECT comment FROM comments WHERE post_id=:targetID',array(':targetID'=>$postid));
+            $ammountOfComments = 0;
+
+            foreach($calculateComments as $calculate)
+            {
+                $ammountOfComments++;
+            }
+            return $ammountOfComments;
         }
     }
 
@@ -89,37 +116,68 @@ class Profile
         $returnValue = "
         
         <h2> ". ucfirst($t_username) ." </h2>
-        <h7> ". $t_username." </h7>
+        <h7> @". $t_username." </h7>
         <p> ".$followersCount." Followers | ".$followingCount." Following | ".$postCount." Posts </p>
         ";
 
         return $returnValue;
     }
 
-    public static function displayImage($t_username)
+    public static function displayImage($t_username, $type)
     {
-        $hasImage = false;
-        $returnValue = "";
-        if(DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$t_username))[0]['profileimg']) 
-        { 
-            $hasImage = true; 
-        }
-        else
-        { 
-            $hasImage = false; 
+        if($type)
+        {
+            $hasImage = false;
+            $returnValue = "";
+            if(DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$t_username))[0]['profileimg']) 
+            { 
+                $hasImage = true; 
+            }
+            else
+            { 
+                $hasImage = false; 
+            }
+    
+           $img = DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$t_username))[0]['profileimg'];
+           
+            if($hasImage)
+            { 
+                 $returnValue = "<img src='". $img."'  width='100%' height='100%'>";
+            }
+            else 
+            {
+              $returnValue = "<img src='Visual/img/avatar.png' width='100%' height='100%'>"; 
+            }
+            return $returnValue;
         }
 
-       $img = DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$t_username))[0]['profileimg'];
-       
-        if($hasImage)
-        { 
-             $returnValue = "<img src='". $img."'  width='100%' height='100%'>";
-        }
-        else 
+        if(!$type)
         {
-          $returnValue = "<img src='Visual/img/avatar.png' width='100%' height='100%'>"; 
+            $hasImage = false;
+            $returnValue = "";
+            if(DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$t_username))[0]['profileimg']) 
+            { 
+                $hasImage = true; 
+            }
+            else
+            { 
+                $hasImage = false; 
+            }
+    
+           $img = DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$t_username))[0]['profileimg'];
+           
+            if($hasImage)
+            { 
+                 $returnValue = "<img src='". $img."' style='margin: auto; margin-left: 5px;' width='80' height='80' >";
+            }
+            else 
+            {
+              $returnValue = "<img src='Visual/img/avatar.png' style='margin: auto; margin-left: 5px;' width='80' height='80'>"; 
+            }
+            return $returnValue;
         }
-        return $returnValue;
+
+
     }
 
     public static function ProfileBanner($targetedUser)
@@ -143,10 +201,4 @@ class Profile
         $colorMap[2] = '#FF0000'; //red
         $colorMap[3] = '#330000'; //dark red
     }
-
-    public static function ReportUser()
-    {
-
-    }
-
 }

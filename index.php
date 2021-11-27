@@ -180,6 +180,7 @@ if(isset($_POST['commentPost']))
         <form action="index.php?post=<?php echo $posts['id'];?>" method="POST">
             <textarea name="text" value="text" placeholder="Comment Something!" class="textAreaComment" id="" cols="80" rows="2"></textarea>
             <button id='commentPost' name="commentPost" class='btn btn'>Send <i class="fas fa-arrow-right"></i></button>
+            <hr>
           </form>
       </div>
         <?php

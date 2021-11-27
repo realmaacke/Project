@@ -9,7 +9,7 @@ else
 {
   Redirect::goto('login.php'); 
 }
-
+$imageToAdd = "No Image Selected";
 if(isset($_GET['username']))
 {
   if(!Profile::verify())
@@ -21,52 +21,69 @@ if(isset($_GET['username']))
   $targetedUser = DB::query('SELECT * FROM users WHERE username=:username',array(':username'=>htmlspecialchars($_GET['username'])));
   $t_id = $targetedUser[0]['id'];
   $t_username = $targetedUser[0]['username'];
-  /////////////////  Admin Permissions  ////////////////////////////////
   $isAdmin = authorization::ValidateAdmin($userid);
 
-  if(isset($_POST['A_DeleteComment']))
-  {
-    if($isAdmin)
-    {
-      authorization::AdminDeleteComment(htmlspecialchars($_GET['comment']));
-      Redirect::goto('index.php');
-    } else
-    {
-      Redirect::goto('index.php');
-    }
-  }
-  if(isset($_POST['A_DeletePost']))
-  {
-    if($isAdmin)
-    {
-      authorization::AdminDeletePost(htmlspecialchars($_GET['post']));
-      Redirect::goto('index.php');
-    }
-     else
-    {
-      Redirect::goto('index.php');
-    }
-  }
 
   if(isset($_POST['follow']))
   {
-    Profile::FollowAction($t_id, $userid, true);
+    Action::FollowAction($t_id, $userid, true);
   }
 
   if(isset($_POST['unfollow']))
   {
-    Profile::FollowAction($t_id, $userid, false);
+    Action::FollowAction($t_id, $userid, false);
   }
 
+  if(isset($_POST['like']))
+  {
+    $postid = $_POST['postid'];
+    Action::LikeAction($postid, $userid);
+  }
 
-  $alreadyLiked = false;
-  $postIndex = 0;
+  if(isset($_POST['unlike']))
+  {
+    $postid = $_POST['postid'];
+    Action::LikeAction($postid, $userid);
+  }
+
+  if(isset($_POST['deleteComment']))
+  {
+
+  }
+
+  if(isset($_POST['deletePost']))
+  {
+    $postid = $_POST['postid'];
+    POST::DeletePost($postid);
+  }
+
+  if(isset($_POST['Comment']))
+  {
+    $body = $_POST['text'];
+    $postid = $_POST['postid'];
+    Comment::createComment($body, $postid, $userid);
+  }
+
+  if(isset($_POST['PostBtn']))
+  {
+      if ($_FILES['postimg']['size'] == 0) 
+      {
+        Post::createPost($_POST['postbody'], Login::isLoggedIn(), $userid);
+      } 
+      else 
+      {
+        $postid = Post::createImgPost($_POST['postbody'], Login::isLoggedIn(), $userid);
+        Image::uploadImage('postimg', "UPDATE posts SET postimg=:postimg WHERE id=:postid", array(':postid'=>$postid));
+      }
+  }
+
 }
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -94,7 +111,7 @@ if(isset($_GET['username']))
                 <div class="P_L_T" style="background-color: <?php echo Profile::ProfileBanner($targetedUser); ?>">
                         <div class="P_L_T_I">
                           <?php
-                          echo Profile::displayImage($t_username);
+                          echo Profile::displayImage($t_username, true);
                           ?>
 
                         </div>
@@ -128,20 +145,30 @@ if(isset($_GET['username']))
                           </div>
                       </div>
                 </div>
-                <?php
-                if($t_id == $userid)
-                {
-                  ?>
+                <?php if($t_id == $userid)
+                { ?> 
                   <div class="P_L_B">
+                    <div class="PostBox">
+                        <form action="profile.php?username=<?php echo $t_username; ?>" method="POST" enctype="multipart/form-data">
+                          <div class="post_top" id="form">
+                            <textarea data-emojiable="true" name="postbody" value="text" placeholder="Comment Something!" class="textAreaPost" id="emoji" cols="80" rows="2"></textarea>
+                          </div>
+                        <div class="post_bottom">
+                              <input id="extrabtns-post" type="file" name="postimg" hidden>
+                              <label id="labelPic" for="extrabtns-post" class="btn btn"><i class="far fa-images"></i></label>
+                              <button name="PostBtn" value="PostBtn" type="submit" id="postbtn-profile" class='btn btn'>Post <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                        </form>
+                    </div>
                   </div>
-                  <?php
-                }
-                ?>
+                  <?php } ?>
         </div>
-
-        <div class="flow">
-                
-        </div>
+ 
+          <div class="flow">
+            <?php Post::ProfilePosts($userid, $t_username, $t_id, $isAdmin); ?>
+          </div>
+      </div>
+  </div>
 </div>
 
 <script>
@@ -164,7 +191,6 @@ $("button").click(function() {  // grabing the button type.
     }
 });
 </script>
-
 <script>
   $("delete").click(function()
 {
@@ -177,6 +203,5 @@ $("button").click(function() {  // grabing the button type.
   });
 });
 </script>
-
 </body>
 </html>
