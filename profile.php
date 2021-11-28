@@ -101,7 +101,7 @@ if(isset($_GET['username']))
             <a href="index.php"><h1>COMBINED </h1></a>
                 <li> <a href="profile.php?username=<?php echo $name;?>">Profile</a> </li>
                 <li> <a href="dm.html">Messages</a> </li>
-                <li> <a href="friends.html">Friends</a> </li>
+                <li> <a href="friends.html">Discover</a> </li>
                 <li> <a href="search.php">Search</a> </li>
         </ul>
 </div>
