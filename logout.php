@@ -9,6 +9,7 @@ if (isset($_POST['confirm'])) {
         if (isset($_POST['alldevices'])) {
 
                 DB::query('DELETE FROM login_tokens WHERE user_id=:userid', array(':userid'=>Login::isLoggedIn()));
+                Redirect::goto('login.php');
 
         } else {
                 if (isset($_COOKIE['CMBNID'])) {
@@ -16,6 +17,7 @@ if (isset($_POST['confirm'])) {
                 }
                 setcookie('CMBNID', '1', time()-3600);
                 setcookie('CMBNID_', '1', time()-3600);
+                Redirect::goto('login.php');
         }
 
 }

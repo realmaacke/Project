@@ -124,7 +124,9 @@ if(isset($_GET['username']))
                             echo Profile::PermisionBadges($t_id);
                             if($t_id == $userid)
                             {
-                            ?> <button type="submit" id="interact-btn" name="button">Edit Profile</button> <?php
+                            ?>
+                            <a href="logout.php" style="color: red;" id="interact-btn">Sign out</a>
+                            <button type="submit" style="color: #83e2b2;" id="interact-btn" name="button">Edit Profile</button> <?php
                             }
                             if($t_id != $userid)
                             { ?> 
