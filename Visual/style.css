@@ -651,3 +651,27 @@ color: rgb(139, 139, 139);
 #cantLogin-a:hover{
     color:#83e2b2;
 }
+
+
+
+/* DM */
+
+.container{
+margin: 30px auto;
+ width: 100%;
+ height: 800px;
+}
+
+.c_left{
+float:left;
+width: 30%;
+height: 100%;
+margin-top: 36px;
+background-color: rgb(78, 78, 78);
+}
+
+.c_right {
+    float:right;
+    width: 70%;
+    height: 100%;
+}

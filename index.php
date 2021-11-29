@@ -80,8 +80,7 @@ if(isset($_POST['commentPost']))
         <ul>
             <a href="index.php"><h1>COMBINED</h1></a>
                 <li> <a href="profile.php?username=<?php echo $name;?>">Profile</a> </li>
-                <li> <a href="dm.html">Messages</a> </li>
-                <li> <a href="topics.php">Discover</a> </li>
+                <li> <a href="dm.php">Messages</a> </li>
                 <li> <a href="search.php">Search</a> </li>
         </ul>
     </div>
