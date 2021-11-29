@@ -96,7 +96,7 @@ if(isset($_GET['username']))
 </head>
 <body>
 
-<div class="navigation">
+<div class="navigation"> 
         <ul>
             <a href="index.php"><h1>COMBINED </h1></a>
                 <li> <a href="profile.php?username=<?php echo $name;?>">Profile</a> </li>

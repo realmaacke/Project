@@ -5,7 +5,15 @@
 ?>
 <?php include_once "header.php"; ?>
 <body>
-  <div class="wrapper">
+<div class="navigation">
+        <ul>
+            <a href="index.php"><h1>COMBINED </h1></a>
+                <li> <a href="profile.php?username=<?php echo $name;?>">Profile</a> </li>
+                <li> <a href="dm.php">Messages</a> </li>
+                <li> <a href="search.php">Search</a> </li>
+        </ul>
+</div>
+
     <section class="chat-area">
       <header>
         <?php 
@@ -23,7 +31,7 @@
             $hasimage = true;
           }
         ?>
-        <a href="users.php" class="back-icon"><i class="fas fa-arrow-left"></i></a>
+        <a href="dm.php" class="back-icon"><i class="fas fa-arrow-left"></i></a>
         <?php 
         if($hasimage){
           ?> <img src="<?php echo $img; ?>" alt=""> <?php
@@ -33,7 +41,7 @@
         ?>
         
         <div class="details">
-          <span><?php echo $row['username']?></span>
+          <a href="profile.php?username=<?php echo $row['username'];?>"><span><?php echo $row['username']?></span></a>
           <p>Active</p>
         </div>
       </header>
@@ -46,9 +54,6 @@
         <button><i class="fab fa-telegram-plane"></i></button>
       </form>
     </section>
-  </div>
-
   <script src="javascript/chat.js"></script>
-
 </body>
 </html>

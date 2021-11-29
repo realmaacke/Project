@@ -12,7 +12,15 @@ $username = DB::query('SELECT username FROM users WHERE id=:id',array(':id'=>$us
 ?>
 <?php include_once "header.php"; ?>
 <body>
-  <div class="wrapper">
+
+<div class="navigation">
+        <ul>
+            <a href="index.php"><h1>COMBINED </h1></a>
+                <li> <a href="profile.php?username=<?php echo $name;?>">Profile</a> </li>
+                <li> <a href="dm.php">Messages</a> </li>
+                <li> <a href="search.php">Search</a> </li>
+        </ul>
+</div>
     <section class="users">
       <header>
         <div class="content">
@@ -26,11 +34,10 @@ $username = DB::query('SELECT username FROM users WHERE id=:id',array(':id'=>$us
             echo Profile::displayImage($username, false);
           ?>
           <div class="details">
-            <span><?php echo $row['username']; ?></span>
+            <span ><?php echo $row['username']; ?></span>
             <p>Active</p>
           </div>
         </div>
-        <a href="php/logout.php?logout_id=<?php echo $row['id']; ?>" class="logout">Logout</a>
       </header>
       <div class="search">
         <span class="text">Select an user to start chat</span>
@@ -41,7 +48,6 @@ $username = DB::query('SELECT username FROM users WHERE id=:id',array(':id'=>$us
   
       </div>
     </section>
-  </div>
 
   <script src="javascript/users.js"></script>
 
