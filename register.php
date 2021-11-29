@@ -31,7 +31,7 @@ if(isset($_POST['register'])){
     <div class="login_bottom">
       <div class="formController">
         <?php echo $error; ?>
-      <form action="login.php" method="POST">
+      <form action="register.php" method="POST">
         <input type="email" name="email" placeholder="E-mail" id="">
         <input type="text" name="username" placeholder="Username">
         <input type="password" name="password" placeholder="Password" id="">

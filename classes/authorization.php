@@ -17,7 +17,7 @@ class authorization {
                             if (!DB::query('SELECT email FROM users WHERE email=:email', array(':email'=>$email))) {
 
                                     DB::query('INSERT INTO users VALUES (\'\', :username, :password, :email, \'0\', \'\', \'\')', array(':username'=>$username, ':password'=>password_hash($password, PASSWORD_BCRYPT), ':email'=>$email));
-                                    Redirect::goto("index.php");
+                                    return "<p id='error'style='color:green'>Registration Successful</p>";
                             } else {
                                 return "<p id='error'style='color:red'>Email already in use!</p>";
                             }
