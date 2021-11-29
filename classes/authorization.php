@@ -19,23 +19,24 @@ class authorization {
                                     DB::query('INSERT INTO users VALUES (\'\', :username, :password, :email, \'0\', \'\', \'\')', array(':username'=>$username, ':password'=>password_hash($password, PASSWORD_BCRYPT), ':email'=>$email));
                                     Redirect::goto("index.php");
                             } else {
-                               Redirect::goto('register.php?emailError');
+                                return "<p id='error'style='color:red'>Email already in use!</p>";
                             }
                     } else {
-                        Redirect::goto('register.php?emailError');
+                        return "<p id='error'style='color:red'>Invalid Email!</p>";
                             }
                     } else {
-                        Redirect::goto('register.php?SendUsernameSpecialCharError');
+                        return "<p id='error'style='color:red'>Invalid Password (a-z, 0-9) > 6 && 30 < </p>";
                     }
+
                     } else {
-                        Redirect::goto('register.php?emailError');
+                        return "<p id='error'style='color:red'>Invalid Username (a-z, 0-9) </p>";
                     }
             } else {
-                Redirect::goto('register.php?usernameErrorToLong');
+                return "<p id='error'style='color:red'>Invalid Username length, minimum 3 and maximum 32 </p>";
             }
 
     } else {
-        Redirect::goto('register.php?usernameError');
+        return "<p id='error'style='color:red'>Username Already Taken! </p>";
     }
     }
 
@@ -55,13 +56,14 @@ class authorization {
           }
           else
           {
-            Redirect::goto('login.php?error');
+            return "<p id='error'style='color:red'>Wrong Credentials!</p>";
           }
         } else
         {
-            Redirect::goto('login.php?error');
+            return "<p id='error' style='color:red'>Wrong Credentials!</p>";
         }
     }
+
 
     public static function ValidateAdmin($id)
     {

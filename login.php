@@ -1,11 +1,10 @@
 <?php 
-include('classes/authorization.php');
-include('classes/DB.php');
-include('classes/Redirect.php');
+include('autoload.php');  // loading all classes using spl loader
+$error = "";
 if(isset($_POST['login'])){
  $usrnm = htmlspecialchars($_POST['username']);
  $pass =  htmlspecialchars($_POST['password']);
-  authorization::login($usrnm, $pass);
+ $error = authorization::login($usrnm, $pass);
 }
 ?>
 <!DOCTYPE html>
@@ -15,7 +14,7 @@ if(isset($_POST['login'])){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="Visual/style.css">
+      <link rel="stylesheet" href="Visual/style.css">
        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
        <link rel="icon" type="image/x-icon" href="Visual\img\favicon.ico">
     <script src="https://kit.fontawesome.com/6bfb37676a.js" crossorigin="anonymous"></script>
@@ -23,26 +22,41 @@ if(isset($_POST['login'])){
 </head>
 <body>
 
-<div class="wrapper fadeInDown">
-  <h1>COMBINED</h1>
-  <div id="formContent">
-    <!-- Tabs Titles -->
-    <h2 class="active"> Sign In </h2>
-    <h2 class="inactive underlineHover"><a href="register.php">Sign up</a></h2>
-    <!-- Login Form -->
-    <br>  <!-- break line  -->
-    <p id="errorMSG" style="color:red; display: none;">Invalid Username or Password</p> <!-- Error MSG  -->
-    <form  method="POST" action="login.php">
-      <input type="text" id="username" class="fadeIn second" id="username" name="username" placeholder="login">
-      <input type="password" id="password" class="fadeIn third" id="password" name="password" placeholder="password">
-      <input class="btn btn-primary fadeIn fourth" name="login" id="login" type="submit">
-    </form>
-    <!-- Remind Passowrd -->
-    <div id="formFooter">
-      <a class="underlineHover" href="#">Forgot Password?</a>
+<div class="login">
+
+    <div class="login_top">
+      <h2>LOGIN</h2>
     </div>
-  </div>
+    <div class="login_bottom">
+      <div class="formController">
+        <?php echo $error; ?>
+      <form action="login.php" method="POST">
+        <input type="text" name="username" placeholder="Username">
+        <input type="password" name="password" placeholder="Password" id="">
+        <input type="submit" id="login-btn" name="login" value="Login">
+      </form>
+      </div>
+    </div>
+
+
 </div>
+
+
+<div class="links">
+  <a id="signup-a" href="register.php">Create Account?</a>
+  <br>
+  <br>
+  <a id="cantLogin-a" href="forgot-password.php">Can't log in?</a>
+</div>
+
 
 </body>
 </html>
+
+<script>
+  setTimeout(function(){
+  if ($('#error').length > 0) {
+    $('#error').remove();
+  }
+}, 3000)
+</script>
