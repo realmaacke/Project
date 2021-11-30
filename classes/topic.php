@@ -5,9 +5,6 @@ class Topic
     public static function DisplayTopics($topic, $userid, $isAdmin)
     {
 
-        if (DB::query("SELECT topics FROM posts WHERE FIND_IN_SET(:topic, topics)", array(':topic'=>htmlspecialchars($_GET['topic'])))) 
-        {
-
             $posts = DB::query("SELECT * FROM posts WHERE FIND_IN_SET(:topic, topics)", array(':topic'=>htmlspecialchars($_GET['topic'])));
     ?>
         <div class="topic_Header">
@@ -17,7 +14,6 @@ class Topic
         </div>
         <?php 
         $postIndex = 0;
-        $hasimage = false;
         $img ="";
         foreach($posts as $post) 
         { 
@@ -28,46 +24,30 @@ class Topic
             $img = DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$user[0]['username']))[0]['profileimg'];
     
              //  Check if post user got any profile image, if not use the default one in Visual/img/..
-            if(DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$user[0]['username']))[0]['profileimg']) { $hasImage = true; }
-            else{ $hasImage = false;  }
-    
-             // same here as the one before
-            if (DB::query('SELECT user_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$post['id'], ':userid'=>$userid))) { $alreadyLiked = true;}
-            else {  $alreadyLiked = false; }
-    
-             // querrying the likes based on what post it is
-            $calculateLikes = DB::query('SELECT * FROM post_likes WHERE post_id=:targetID', array(':targetID'=>$post['id']));
-            $ammountOfLikes = 0;  // standard value
-            foreach($calculateLikes as $like)
-            {  // for each like ++
-               $ammountOfLikes++;
-            }
-    
-             // calculate how many comments the post have
-            $calculateComments = DB::query('SELECT comment FROM comments WHERE post_id=:targetID',array(':targetID'=>$post['id']));
-            $ammountOfComments = 0;
-            foreach($calculateComments as $calculate)
+            if(DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$user[0]['username']))[0]['profileimg']) 
             {
-            $ammountOfComments++;
+              $hasImage = true; 
             }
+            else
+            {
+              $hasImage = false;  
+            }
+    
             ?>
 
         <div class="post">
                 <div class="left">
                         <div class="top">
                             <?php 
-                               if($hasImage){ ?>
-           
-                                <img src="<?php echo $img; ?>" alt="" style="margin: auto; margin-left: 5px;" width="80" height="80">
-                            <?php
+                            if($hasImage)
+                            { 
+                              ?> <img src="<?php echo $img; ?>" alt="" style="margin: auto; margin-left: 5px;" width="80" height="80"> <?php
                             }
-                            else {
-                              ?> <img src="Visual/img/avatar.png" alt="" style="margin: auto; margin-left: 5px;" width="80" height="80">
-                              <?php
+                            else 
+                            {
+                              ?> <img src="Visual/img/avatar.png" alt="" style="margin: auto; margin-left: 5px;" width="80" height="80"> <?php
                             }
-                              ?>
-            
-                                <h3><a href="profile.php?username=<?php echo $user[0]['username'] ?>"><?php echo "@". $user[0]['username'] ; ?></a></h3>
+                              ?> <h3><a href="profile.php?username=<?php echo $user[0]['username'] ?>"><?php echo "@". $user[0]['username'] ; ?></a></h3>
                         </div>
                 </div>
 
@@ -148,5 +128,4 @@ class Topic
             }
         }
 
-    }
 }
