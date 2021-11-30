@@ -2,6 +2,9 @@
   session_start();
   include('autoload.php');  // loading all classes using spl loader
   include_once "php/config.php";
+
+  if (Login::isLoggedIn())  { $userid = Login::isLoggedIn(); }
+  else {  Redirect::goto('login.php'); }
 ?>
 <?php include_once "header.php"; ?>
 <body>

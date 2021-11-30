@@ -9,6 +9,8 @@ else {  Redirect::goto('login.php'); }
 $_SESSION['unique_id'] = $userid;
 $username = DB::query('SELECT username FROM users WHERE id=:id',array(':id'=>$userid))[0]['username'];
 
+Notify::DeleteNotification($userid);
+
 ?>
 <?php include_once "header.php"; ?>
 <body>

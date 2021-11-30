@@ -19,5 +19,28 @@ class Notify {
 
                 return $notify;
         }
+
+        public static function MessageNotify($from, $to)
+        {
+                DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender, :extra)', array(':type'=>1, ':receiver'=>$to, ':sender'=>$from, ':extra'=>""));
+        }
+
+        public static function ReturnNotification($userid)
+        {
+                $notification = DB::query('SELECT receiver FROM notifications WHERE receiver=:userid',array(':userid'=>$userid));
+
+                if($notification)
+                {
+                        return true;
+                }
+                else {
+                       return false;
+                }
+        }
+
+        public static function DeleteNotification($userid)
+        {
+                $notification = DB::query('DELETE FROM notifications WHERE receiver=:userid',array(':userid'=>$userid));
+        }
 }
 ?>

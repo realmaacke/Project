@@ -58,6 +58,11 @@ if(isset($_POST['commentPost']))
 {
   Comment::createComment(htmlspecialchars($_POST['text']),htmlspecialchars($_GET['post']), $userid);
 }
+$Notify = "";
+if(Notify::ReturnNotification($userid))
+{
+  $Notify = "<i class='fas fa-comment-dots' style='color:yellow;'></i>";
+}
 
 
 ?>
@@ -80,7 +85,7 @@ if(isset($_POST['commentPost']))
         <ul>
             <a href="index.php"><h1>COMBINED</h1></a>
                 <li> <a href="profile.php?username=<?php echo $name;?>">Profile</a> </li>
-                <li> <a href="dm.php">Messages</a> </li>
+                <li> <a href="dm.php">Messages <?php echo $Notify; ?></a> </li>
                 <li> <a href="search.php">Search</a> </li>
         </ul>
     </div>
