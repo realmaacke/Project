@@ -180,6 +180,33 @@ class Profile
 
     }
 
+    public static function EditProfileImg($username)
+    {
+            $hasImage = false;
+            $returnValue = "";
+            if(DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$username))[0]['profileimg']) 
+            { 
+                $hasImage = true; 
+            }
+            else
+            { 
+                $hasImage = false; 
+            }
+    
+           $img = DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$username))[0]['profileimg'];
+           
+            if($hasImage)
+            { 
+                 $returnValue = "<img src='". $img."' class='edit-img' id='OpenImgUpload' width='100%' height='100%' onclick='ChangePicture()' >";
+            }
+            else 
+            {
+              $returnValue = "<img src='Visual/img/avatar.png' class='edit-img' id='OpenImgUpload' width='100%' height='100%' onclick='ChangePicture()' >"; 
+            }
+            return $returnValue;
+        
+    }
+
     public static function ProfileBanner($targetedUser)
     {
         $colorMap[0] = '#5ed6a0'; // DEFAULT
@@ -194,11 +221,15 @@ class Profile
         }
     }
 
-    public static function changeProfileBanner()
+    public static function changeProfileBanner($userid)
     {
-        $colorMap[0] = '#5ed6a0'; // DEFAULT
-        $colorMap[1] = '#0000FF'; //blue
-        $colorMap[2] = '#FF0000'; //red
-        $colorMap[3] = '#330000'; //dark red
+        $color = $_POST['color'];
+        if(DB::query('SELECT colorbanner FROM users WHERE id=:userid',array(':userid'=>$userid)))
+        {
+                DB::query('UPDATE users SET colorbanner=:cb WHERE id=:userid',array(':cb'=>$color, ':userid'=>$userid));
+        }
+        else {
+                DB::query('INSERT INTO users VALUES (:color)', array(':color'=>$color));
+        }
     }
 }
