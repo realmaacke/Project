@@ -120,11 +120,11 @@ $("button").click(function() {  // grabing the button type.
     }
 });
 
-$('#OpenImgUpload').click(function(){
+$('#OpenImgUpload').click(function(){   // triggers file "explorer"
  $('#imgupload').trigger('click'); });
 
 
-document.getElementById("imgupload").onchange = function() {
+document.getElementById("imgupload").onchange = function() {    // send profile pic post form when file != null
         $('#submitPicture').trigger('click');
 };
 
