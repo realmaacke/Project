@@ -120,12 +120,15 @@ if(isset($_GET['username']))
                           <div class="P_text">
                             <?php
                             echo Profile::Statistic($t_id, $t_username);
-                            echo Profile::PermisionBadges($t_id);
+                            echo Profile::PermisionBadges($t_id); ?>
+
+                            </div>
+                            <div class="P_text_right"> <?php
                             if($t_id == $userid)
                             {
                             ?>
                             <a href="logout.php" style="color: red;" id="interact-btn">Sign out</a>
-                            <button type="submit" style="color: #83e2b2;" id="interact-btn" name="button">Edit Profile</button> <?php
+                            <a href="my-account.php?username=<?php echo $name;?>" style="color: #83e2b2;" id="interact-btn" name="button">Settings</a> <?php
                             }
                             if($t_id != $userid)
                             { ?> 
@@ -138,12 +141,14 @@ if(isset($_GET['username']))
                                 {
                                   ?> <button type="submit" id="interact-btn" value="follow" name="follow">Follow</button> <?php
                                 } ?>
-                                <button type="button" id="interact-btn" value="message" name="message">Message</button>
+                                <a href="chat.php?user_id=<?php echo $t_id; ?>" id="interact-btn">Message</a>
                               </form>
                                 <?php 
                             }
                             ?>
                           </div>
+                          
+                          
                       </div>
                 </div>
                 <?php if($t_id == $userid)

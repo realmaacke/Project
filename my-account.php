@@ -27,10 +27,12 @@ if(isset($_GET['username']))
   if(isset($_POST['Change']))
   {
           Profile::changeProfileBanner($userid);
+          header('Cache-Control: no-store, no-cache, must-revalidate');
   }
 
   if(isset($_POST['uploadprofileimg'])){
         Image::uploadImage('profileimg', "UPDATE users SET profileimg = :profileimg WHERE id=:userid", array(':userid'=>$userid));
+        header('Cache-Control: no-store, no-cache, must-revalidate');
   }
 
 }
@@ -80,13 +82,17 @@ else {
                         <hr>
                           <div class="P_text">
                             <?php
+                            echo Profile::Statistic($userid, $user[0]['username']);
                             echo Profile::PermisionBadges($userid);
                             ?>
                           </div>
+                          <div class="P_text_right">
                           <form action="my-account.php?username=<?php echo $user[0]['username']; ?>" method="POST">
-                                <input type="color" name="color" id="bannerColor">
-                                <input type="submit" name="Change" value="Change Color">
+                                <button type="submit" name="Change" value="Change Color" id="interact-btn">Change Banner Color</button>
+                                <input type="color" name="color" id="bannerColor" hidden />
+                                <button type="button" name="Change" value="Change Color" id="bannerColor-btn"><i class="fas fa-palette"></i></button>
                           </form>
+                          </div>
                       </div>
                 </div>
         </div>
@@ -119,6 +125,9 @@ $("button").click(function() {  // grabing the button type.
       return;
     }
 });
+
+$('#bannerColor-btn').click(function(){   // triggers file "explorer"
+ $('#bannerColor').trigger('click'); });
 
 $('#OpenImgUpload').click(function(){   // triggers file "explorer"
  $('#imgupload').trigger('click'); });

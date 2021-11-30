@@ -380,6 +380,33 @@ a:hover{
 
 .P_text{
   margin-left: 14px;
+  width: 50%;
+  float:left;
+}
+
+.P_text_right{
+    float:right;
+    width: 40%;
+    height: 100px;
+    margin-top: 90px;
+}
+
+#bannerColor-btn{
+    
+  float:right;
+  margin-right: 14px;
+  margin-top: 20px;
+  border-radius: 12px;
+  font-size: 1.5em;
+  background-color: rgb(51, 54, 65);
+  padding-left: 5px;
+  padding-right: 5px;
+  color: white;
+  border: none;
+}
+
+#bannerColor-btn:hover{
+    color: #83e2b2;
 }
 
 .P_L_T_I{

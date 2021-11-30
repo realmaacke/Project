@@ -142,11 +142,11 @@ class Profile
            
             if($hasImage)
             { 
-                 $returnValue = "<img src='". $img."'  width='100%' height='100%'>";
+                 $returnValue = "<img src='". $img."' id='profile-pic' width='100%' height='100%'>";
             }
             else 
             {
-              $returnValue = "<img src='Visual/img/avatar.png' width='100%' height='100%'>"; 
+              $returnValue = "<img src='Visual/img/avatar.png' id='profile-pic' width='100%' height='100%'>"; 
             }
             return $returnValue;
         }
