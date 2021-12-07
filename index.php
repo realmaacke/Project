@@ -48,16 +48,6 @@ if(isset($_POST['self_DeleteComment']))
 // defining Variables
 $name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
 
-
-// handling form submition
-if(isset($_POST['LikeAction']))
-{
-  Action::LikeAction(htmlspecialchars($_GET['post']), $userid);
-}
-if(isset($_POST['commentPost']))
-{
-  Comment::createComment(htmlspecialchars($_POST['text']),htmlspecialchars($_GET['post']), $userid);
-}
 $Notify = "";
 if(Notify::NavbarNotification($userid))
 {
@@ -92,39 +82,49 @@ if(Notify::NavbarNotification($userid))
     <div class="flow">
       <?php Post::IndexPosts($userid, $isAdmin) ?>
    </div>
+<script type="text/javascript">
+
+
+$(document).ready(function ()
+{
+
+  $('[data-id]').click(function() 
+  {
+    var buttonid = $(this).attr('data-id');
+
+      $.ajax({
+
+            type: "POST",
+            url: "api/likes?id=" + $(this).attr('data-id'),
+            processData: false,
+            contentType: "application/json",
+            data: '',
+            success: function(r) 
+            {
+            var res = JSON.parse(r)
+            $("[data-id='"+buttonid+"']").html(' '+res.Likes+' <i class="far fa-heart" data-aos="flip-right"></i><span></span>')
+            },
+
+            error: function(r) 
+            {
+                  console.log(r)
+            }
+      
+      });
+
+  })
+
+
+        $('button').click(function ()
+        {
+         var commentValue = $(this).val(); 
+        
+         
+        });
+
+});
+
+</script>
+
 </body>
 </html>
-
-<script>
-  // script that opens the comment section
-$("button").click(function() {  // grabing the button type.
-    var commentValue = $(this).val(); // grabing the value of the button, (set to the postindex)
-    row = $('#' + commentValue);
-
-    //switching the css when true
-    if(row.css('display') === 'none')
-    {
-      row.css('display', 'inline-block');
-    }
-    else if(row.css('display') === 'inline-block')
-    {
-      row.css('display', 'none');
-    }
-    else{
-      return;
-    }
-});
-</script>
-
-<script>
-  $("delete").click(function()
-{
-    $.ajax({
-    type: "POST",
-    url: url,
-    data: "DELETE",
-    success: success,
-    dataType: dataType
-  });
-});
-</script>

@@ -134,8 +134,8 @@ class Post {
                             <div id="post-bottom">
                             <form  method="POST" style="width:50%; float:left">
                             <input type="hidden" name="postid" value="<?php echo $p['id']; ?>">
-                             <button type='button' id='like' data-id="<?php echo $p['id']; ?>" name='like' value="<?php echo $p['id']; ?>" class='btn btn-primary'> <?php echo Profile::Ammount($p['id'], true); ?> <i class='far fa-heart'></i></button>
-                              <button type="button"  value="<?php echo $postIndex; ?>" id="CommentBTN" class='btn btn-primary'><?php echo Profile::Ammount($p['id'], false); ?>  <i class="far fa-comments"></i></button>
+                             <button type="button" id='like' data-id="<?php echo $p['id']; ?>" name='like' value="<?php echo $p['id']; ?>" class='btn btn-primary'> <?php echo Profile::Ammount($p['id'], true); ?> <i class='far fa-heart'></i></button>
+                              <button type="button" value="<?php echo $postIndex; ?>" id="CommentBTN" class='btn btn-primary'><?php echo Profile::Ammount($p['id'], false); ?>  <i class="far fa-comments"></i></button>
                               </form>
                               <?php
                                 if($isAdmin)
@@ -256,31 +256,28 @@ class Post {
                            </div>
                        </div>
                        <div class="right">
-                           <div id="post-top">
-                               <?php
-                               echo Post::link_add($posts['body']);  // link_add is an function that separates characters that start with an @ as a userlink.
-                               ?>
-                           </div>
-                           <div id="post-bottom">
-                           <form action="index.php?post=<?php echo $posts['id'];?>" method="POST" style="width:50%; float:left">
-                           <?php
-                           if(!$alreadyLiked){
-                             ?> <button type='submit'  name='LikeAction' value="LikeAction" class='btn btn-primary'><?php echo $ammountOfLikes;?> <i class='far fa-heart'></i></button> <?php
-                           } else {
-                             ?> <button type='submit'  name='LikeAction' value="LikeAction" class='btn btn-primary'><?php echo $ammountOfLikes;?> <i class='fas fa-heart'></i></button> <?php
-                           }
-                           ?>
-                             <button type="button"  value="<?php echo $postIndex; ?>" id="CommentBTN" class='btn btn-primary'><?php echo $ammountOfComments; ?>  <i class="far fa-comments"></i></button>
-                           <?php
-                           if($isAdmin)
-                           {
-                             ?>
-                             <form action="index.php?postid=<?php $posts['id'];?>" method="POST">
-                                 <button type='submit' style='color:red;' name='A_DeletePost' class='btn btn-primary'><i class="far fa-trash-alt"></i></button>
-                             </form>
-                           <?php
-                           }
-                           ?>
+                          <div id="post-top">
+                          <?php
+                        echo Post::link_add($posts['body']);  // link_add is an function that separates characters that start with an @ as a userlink.
+                        ?>
+                          </div>
+                            <div id="post-bottom">
+                            <form  method="POST" style="width:50%; float:left">
+                            <input type="hidden" name="postid" value="<?php echo $posts['id']; ?>">
+                             <button type='button' id='like' data-id="<?php echo $posts['id']; ?>" name='like' value="<?php echo $posts['id']; ?>" class='btn btn-primary'> <?php echo Profile::Ammount($posts['id'], true); ?> <i class='far fa-heart'></i></button>
+                              <button type="button"  value="<?php echo $postIndex; ?>" id="CommentBTN" class='btn btn-primary'><?php echo Profile::Ammount($posts['id'], false); ?>  <i class="far fa-comments"></i></button>
+                              </form>
+                              <?php
+                                if($isAdmin)
+                                {
+                                  ?>
+                                  <form style="float:right" action="" method="POST">
+                                      <input type="hidden" name="postid" value="<?php echo $posts['id']; ?>">
+                                      <button type='submit' style='color:red;' name='deletePost' class='btn btn-primary'><i class="far fa-trash-alt"></i></button>
+                                  </form>
+                                <?php
+                                }
+                                ?>
                            </form>
                            </div>
                        </div>

@@ -184,9 +184,6 @@ if(isset($_GET['username']))
 $(document).ready(function ()
 {
 
-  var userid = <?php echo $userid ?>;
-
-
   $('[data-id]').click(function() 
   {
     var buttonid = $(this).attr('data-id');
