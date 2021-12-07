@@ -132,17 +132,9 @@ class Post {
                         ?>
                           </div>
                             <div id="post-bottom">
-                            <form action="profile.php?username=<?php echo $t_name; ?>" method="POST" style="width:50%; float:left">
+                            <form  method="POST" style="width:50%; float:left">
                             <input type="hidden" name="postid" value="<?php echo $p['id']; ?>">
-                              <?php 
-                              if(Profile::CheckifLiked($userid, $p['id']))
-                              {
-                                ?> <button type='button' id='unlike' name='unlike' onclick="LikeAction('<?php echo $userid; ?>','<?php echo $p['id'];?>');" value="unlike" class='btn btn-primary'> <?php echo Profile::Ammount($p['id'], true); ?> <i class='fas fa-heart'></i></button> <?php
-                              }
-                              else {
-                                ?> <button type='button' id='like' name='like' onclick="LikeAction('<?php echo $userid; ?>','<?php echo $p['id'];?>');" value="like" class='btn btn-primary'> <?php echo Profile::Ammount($p['id'], true); ?>  <i class='far fa-heart'></i></button> <?php
-                              }
-                              ?>
+                             <button type='button' id='like' data-id="<?php echo $p['id']; ?>" name='like' value="<?php echo $p['id']; ?>" class='btn btn-primary'> <?php echo Profile::Ammount($p['id'], true); ?> <i class='far fa-heart'></i></button>
                               <button type="button"  value="<?php echo $postIndex; ?>" id="CommentBTN" class='btn btn-primary'><?php echo Profile::Ammount($p['id'], false); ?>  <i class="far fa-comments"></i></button>
                               </form>
                               <?php

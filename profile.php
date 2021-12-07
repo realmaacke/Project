@@ -178,40 +178,74 @@ if(isset($_GET['username']))
   </div>
 </div>
 
-<script>
+<script type="text/javascript">
 
-  // script that opens the comment section
-$("button").click(function() {  // grabing the button type.
-    var commentValue = $(this).val(); // grabing the value of the button, (set to the postindex)
-  
-    if(commentValue == "like")
-    {
-      return;
-    } 
-    else if(commentValue == "unlike")
-    {
-      return;
-    }
-    else 
-    {
-     row = $('#' + commentValue);
 
-    //switching the css when true
-    if(row.css('display') === 'none')
-    {
-    row.css('display', 'inline-block');
-    }
-    else if(row.css('display') === 'inline-block')
-    {
-      row.css('display', 'none');
-    }
-    else
-    {
-      return;
-    }
+$(document).ready(function ()
+{
 
-  }
+  var userid = <?php echo $userid ?>;
+
+
+  $('[data-id]').click(function() 
+  {
+    var buttonid = $(this).attr('data-id');
+
+      $.ajax({
+
+            type: "POST",
+            url: "api/likes?id=" + $(this).attr('data-id'),
+            processData: false,
+            contentType: "application/json",
+            data: '',
+            success: function(r) 
+            {
+            var res = JSON.parse(r)
+            $("[data-id='"+buttonid+"']").html(' '+res.Likes+' <i class="far fa-heart" data-aos="flip-right"></i><span></span>')
+            },
+
+            error: function(r) 
+            {
+                  console.log(r)
+            }
+      
+      });
+
+  })
+
+  $("button").click(function() {
+      var commentValue = $(this).val(); 
+    
+      if(commentValue == "like")
+      {
+        return;
+      } 
+      else if(commentValue == "unlike")
+      {
+        return;
+      }
+      else 
+      {
+      row = $('#' + commentValue);
+
+      //switching the css when true
+      if(row.css('display') === 'none')
+      {
+      row.css('display', 'inline-block');
+      }
+      else if(row.css('display') === 'inline-block')
+      {
+        row.css('display', 'none');
+      }
+      else
+      {
+        return;
+      }
+
+    }
+  });
 });
 </script>
+
 </body>
 </html>
