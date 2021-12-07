@@ -36,7 +36,7 @@ class Notify {
                         $temp = DB::query('SELECT posts.user_id AS receiver, post_likes.user_id AS sender FROM posts, post_likes WHERE posts.id = post_likes.post_id AND posts.id=:postid', array(':postid'=>$postid));
                         $r = $temp[0]["receiver"];
                         $s = $temp[0]["sender"];
-                        DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender, :seen)', array(':type'=>2, ':receiver'=>$r, ':sender'=>$s, ':seen'=>0));
+                        DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender, :seen)', array(':type'=>2, ':receiver'=>$r, ':sender'=>$s));
                 }
 
                 return $notify;
@@ -46,7 +46,7 @@ class Notify {
         {//1
                 if(!DB::query('SELECT seen FROM notifications WHERE receiver=:receiver AND sender=:sender', array(':receiver'=>$to, ':sender'=>$from)))
                 {
-                        DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender, :seen)', array(':type'=>1, ':receiver'=>$to, ':sender'=>$from, ':seen'=>0));
+                        DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender, :seen)', array(':type'=>1, ':receiver'=>$to, ':sender'=>$from));
                 }
                 else{
                         return;
@@ -58,11 +58,16 @@ class Notify {
                 // if notification has been seen dont send
                 if(!DB::query('SELECT seen FROM notifications WHERE receiver=:receiver AND sender=:sender', array(':receiver'=>$to, ':sender'=>$from)))
                 {
-                        DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender, :seen)', array(':type'=>3, ':receiver'=>$to, ':sender'=>$from, ':seen'=>0));
+                        DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender, :seen)', array(':type'=>3, ':receiver'=>$to, ':sender'=>$from));
                 }
                 else{
                         return;
                 }
+        }
+
+        public static function DeleteNotification($id)
+        {
+                DB::query('DELETE * FROM notifications WHERE id=:id',array(':id'=>$id));
         }
 }
 ?>
