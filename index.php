@@ -59,7 +59,7 @@ if(isset($_POST['commentPost']))
   Comment::createComment(htmlspecialchars($_POST['text']),htmlspecialchars($_GET['post']), $userid);
 }
 $Notify = "";
-if(Notify::ReturnNotification($userid))
+if(Notify::NavbarNotification($userid))
 {
   $Notify = "<i class='fas fa-comment-dots' style='color:yellow;'></i>";
 }

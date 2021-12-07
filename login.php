@@ -31,8 +31,8 @@ if(isset($_POST['login'])){
       <div class="formController">
         <?php echo $error; ?>
       <form action="login.php" method="POST">
-        <input type="text" name="username" placeholder="Username">
-        <input type="password" name="password" placeholder="Password" id="">
+        <input type="text" name="username" placeholder="Username" autocomplete="off">
+        <input type="password" name="password" placeholder="Password" id="" autocomplete="off">
         <input type="submit" id="login-btn" name="login" value="Login">
       </form>
       </div>

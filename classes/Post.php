@@ -13,12 +13,12 @@ class Post {
 
                 if ($loggedInUserId == $profileUserId) {
 
-                        if (count(Notify::createNotify($postbody)) != 0) {
-                                foreach (Notify::createNotify($postbody) as $key => $n) {
+                        if (count(Notify::atNotifications($postbody)) != 0) {
+                                foreach (Notify::atNotifications($postbody) as $key => $n) {
                                                 $s = $loggedInUserId;
                                                 $r = DB::query('SELECT id FROM users WHERE username=:username', array(':username'=>$key))[0]['id'];
                                                 if ($r != 0) {
-                                                        DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender, :extra)', array(':type'=>$n["type"], ':receiver'=>$r, ':sender'=>$s, ':extra'=>$n["extra"]));
+                                                        DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender)', array(':type'=>$n["type"], ':receiver'=>$r, ':sender'=>$s));
                                                 }
                                         }
                                 }
@@ -40,8 +40,8 @@ class Post {
 
                 if ($loggedInUserId == $profileUserId) {
 
-                        if (count(Notify::createNotify($postbody)) != 0) {
-                                foreach (Notify::createNotify($postbody) as $key => $n) {
+                        if (count(Notify::atNotifications($postbody)) != 0) {
+                                foreach (Notify::atNotifications($postbody) as $key => $n) {
                                                 $s = $loggedInUserId;
                                                 $r = DB::query('SELECT id FROM users WHERE username=:username', array(':username'=>$key))[0]['id'];
                                                 if ($r != 0) {
@@ -88,8 +88,6 @@ class Post {
                   DB::query('DELETE FROM post_likes WHERE post_id=:A_POSTID',array('A_POSTID'=>$id)); //deleting the post likes
                 }
         }
-
-
 
         public static function link_add($text) {
 
@@ -139,10 +137,10 @@ class Post {
                               <?php 
                               if(Profile::CheckifLiked($userid, $p['id']))
                               {
-                                ?> <button type='submit'  name='unlike' value="unlike" class='btn btn-primary'> <?php echo Profile::Ammount($p['id'], true); ?> <i class='fas fa-heart'></i></button> <?php
+                                ?> <button type='button' id='unlike' name='unlike' onclick="LikeAction('<?php echo $userid; ?>','<?php echo $p['id'];?>');" value="unlike" class='btn btn-primary'> <?php echo Profile::Ammount($p['id'], true); ?> <i class='fas fa-heart'></i></button> <?php
                               }
                               else {
-                                ?> <button type='submit'  name='like' value="like" class='btn btn-primary'> <?php echo Profile::Ammount($p['id'], true); ?>  <i class='far fa-heart'></i></button> <?php
+                                ?> <button type='button' id='like' name='like' onclick="LikeAction('<?php echo $userid; ?>','<?php echo $p['id'];?>');" value="like" class='btn btn-primary'> <?php echo Profile::Ammount($p['id'], true); ?>  <i class='far fa-heart'></i></button> <?php
                               }
                               ?>
                               <button type="button"  value="<?php echo $postIndex; ?>" id="CommentBTN" class='btn btn-primary'><?php echo Profile::Ammount($p['id'], false); ?>  <i class="far fa-comments"></i></button>

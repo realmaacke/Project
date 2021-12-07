@@ -27,6 +27,7 @@ if(isset($_GET['username']))
   if(isset($_POST['follow']))
   {
     Action::FollowAction($t_id, $userid, true);
+    Notify::isBeingFollowed($userid, $t_id);
   }
 
   if(isset($_POST['unfollow']))
@@ -34,17 +35,17 @@ if(isset($_GET['username']))
     Action::FollowAction($t_id, $userid, false);
   }
 
-  if(isset($_POST['like']))
-  {
-    $postid = $_POST['postid'];
-    Action::LikeAction($postid, $userid);
-  }
+  // if(isset($_POST['like']))
+  // {
+  //   $postid = $_POST['postid'];
+  //   Action::LikeAction($postid, $userid);
+  // }
 
-  if(isset($_POST['unlike']))
-  {
-    $postid = $_POST['postid'];
-    Action::LikeAction($postid, $userid);
-  }
+  // if(isset($_POST['unlike']))
+  // {
+  //   $postid = $_POST['postid'];
+  //   Action::LikeAction($postid, $userid);
+  // }
 
   if(isset($_POST['deleteComment']))
   {
@@ -178,35 +179,38 @@ if(isset($_GET['username']))
 </div>
 
 <script>
+
   // script that opens the comment section
 $("button").click(function() {  // grabing the button type.
     var commentValue = $(this).val(); // grabing the value of the button, (set to the postindex)
-    row = $('#' + commentValue);
+  
+    if(commentValue == "like")
+    {
+      return;
+    } 
+    else if(commentValue == "unlike")
+    {
+      return;
+    }
+    else 
+    {
+     row = $('#' + commentValue);
 
     //switching the css when true
     if(row.css('display') === 'none')
     {
-      row.css('display', 'inline-block');
+    row.css('display', 'inline-block');
     }
     else if(row.css('display') === 'inline-block')
     {
       row.css('display', 'none');
     }
-    else{
+    else
+    {
       return;
     }
-});
-</script>
-<script>
-  $("delete").click(function()
-{
-    $.ajax({
-    type: "POST",
-    url: url,
-    data: "DELETE",
-    success: success,
-    dataType: dataType
-  });
+
+  }
 });
 </script>
 </body>
