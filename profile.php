@@ -189,7 +189,7 @@ $(document).ready(function ()
     var buttonid = $(this).attr('data-id');
 
       $.ajax({
-
+// Change color instead of icon
             type: "POST",
             url: "api/likes?id=" + $(this).attr('data-id'),
             processData: false,
