@@ -3,18 +3,6 @@
 class Action
 {
 
-    public static function FollowAction($t_id, $userid,$action)
-    {
-        if($action)
-        {
-            DB::query('INSERT INTO followers VALUES (\'\', :user_id, :follower_id)', array(':user_id'=>$t_id, ':follower_id'=>$userid));
-        }
-        if(!$action)
-        {
-         DB::query('DELETE FROM followers WHERE user_id=:userid AND follower_id=:followerid',array(':userid'=>$t_id, ':followerid'=>$userid));
-        }
-    }
-
     public static function LikeAction($postId, $likerId) {
 
         if (!DB::query('SELECT user_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$postId, ':userid'=>$likerId))) {

@@ -133,15 +133,14 @@ class Post {
                           </div>
                             <div id="post-bottom">
                             <form  method="POST" style="width:50%; float:left">
-                            <input type="hidden" name="postid" value="<?php echo $p['id']; ?>">
-                             <button type="button" id='like' data-id="<?php echo $p['id']; ?>" name='like' value="<?php echo $p['id']; ?>" class='btn btn-primary'> <?php echo Profile::Ammount($p['id'], true); ?> <i class='far fa-heart'></i></button>
+                             <button type="button" id='like' data-id="<?php echo $p['id']; ?>" name='like' class='btn btn-primary'> <?php echo Profile::Ammount($p['id'], true); ?> <i class='far fa-heart'></i></button>
                               <button type="button" value="<?php echo $postIndex; ?>" id="CommentBTN" class='btn btn-primary'><?php echo Profile::Ammount($p['id'], false); ?>  <i class="far fa-comments"></i></button>
                               </form>
                               <?php
                                 if($isAdmin)
                                 {
                                   ?>
-                                  <form style="float:right" action="profile.php?username=<?php echo $t_name;?>" method="POST">
+                                  <form style="float:right" id="deletePost" method="POST">
                                       <input type="hidden" name="postid" value="<?php echo $p['id']; ?>">
                                       <button type='submit' style='color:red;' name='deletePost' class='btn btn-primary'><i class="far fa-trash-alt"></i></button>
                                   </form>
@@ -152,38 +151,42 @@ class Post {
                             </div>
                     </div>
                 </div>
-    
                 <div class="comments" id="<?php echo $postIndex; ?>">
                         <div class="PostComment">
-                          <form action="profile.php?username=<?php echo $t_name; ?>" method="POST">
-                              <input type="hidden" name="postid" value="<?php echo $p['id']; ?>">
+                          <form id="commentForm" method="POST">
+                                <input type="hidden" name="postid" value="<?php echo $p['id']; ?>">
                               <textarea name="text" value="text" placeholder="Comment Something!" class="textAreaComment" id="" cols="80" rows="2"></textarea>
                               <button id='commentPost' name="Comment" class='btn btn'>Send <i class="fas fa-arrow-right"></i></button>
                            </form>
-                        </div>
+                         </div>
+
+
+
+
                         <?php
-                         $commentIndex = 0;
+                        $commentIndex = 0;
                          $comment = DB::query('SELECT * FROM comments WHERE post_id=:postid', array(':postid'=>$p['id']));
-            $commentOwner = false;
-            foreach($comment as $cmt)
-            {
-              $commentIndex++;
-              $cmtName = DB::query('SELECT username FROM users WHERE id=:userid',array(':userid'=>$cmt['user_id']))[0]['username'];
-              if($cmt['user_id'] == $userid)
-              {
-                $commentOwner = true;
-              
-              }
+                        $commentOwner = false;
+                        foreach($comment as $cmt)
+                        {
+                        $commentIndex++;
+                        $cmtName = DB::query('SELECT username FROM users WHERE id=:userid',array(':userid'=>$cmt['user_id']))[0]['username'];
+                        if($cmt['user_id'] == $userid)
+                        {
+                                $commentOwner = true;
+                        
+                        }
               ?>
-              <div class="C_item">
-                        <?php
-              if($commentOwner || $isAdmin)
+              <div class="C_item"> 
+        <?php if($commentOwner || $isAdmin)
                  { ?>
-                   <form style="float:right; padding-right:50px;" action="index.php?comment=<?php echo $cmt['id'];?>" method="POST">
-                          <button type='submit' style="color:red; float:right" name='self_DeleteComment' class='btn btn'><i class="far fa-trash-alt"></i></button>
-                      </form>
-                   <?php
-                 } ?>
+                <form style="float:right; padding-right:50px;" id="deleteComment" method="POST">
+                        <input type="hidden" name="commentid" value="<?php echo $cmt['id']; ?>">
+                        <button type='button' style="color:red; float:right" class='btn btn'><i class="far fa-trash-alt"></i></button>
+                </form>
+        
+                <?php } ?>
+
                 <h2 ><a href="profile.php?username=<?php echo $cmtName;?>"> <?php echo $cmtName ?></a> -</h2>
                 <p ><?php echo Post::link_add($cmt['comment']); ?>
                         <div class="cmtLine"></div>

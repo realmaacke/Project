@@ -3,11 +3,6 @@ class Notify {
 
         // type: 1 = Message, 2 = user -> @, 3 = Followed
 
-        public static function DisplayNotifications($from, $userid, $type)
-        {
-
-        }
-
         public static function NavbarNotification($id)
         {
                 if(DB::query('SELECT id FROM notifications WHERE receiver=:receiver',array(':receiver'=>$id)))
@@ -46,7 +41,7 @@ class Notify {
         {//1
                 if(!DB::query('SELECT seen FROM notifications WHERE receiver=:receiver AND sender=:sender', array(':receiver'=>$to, ':sender'=>$from)))
                 {
-                        DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender, :seen)', array(':type'=>1, ':receiver'=>$to, ':sender'=>$from));
+                        DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender)', array(':type'=>1, ':receiver'=>$to, ':sender'=>$from));
                 }
                 else{
                         return;
@@ -56,9 +51,9 @@ class Notify {
         public static function isBeingFollowed($from, $to)
         {//3
                 // if notification has been seen dont send
-                if(!DB::query('SELECT seen FROM notifications WHERE receiver=:receiver AND sender=:sender', array(':receiver'=>$to, ':sender'=>$from)))
+                if(!DB::query('SELECT receiver FROM notifications WHERE receiver=:receiver AND sender=:sender', array(':receiver'=>$to, ':sender'=>$from)))
                 {
-                        DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender, :seen)', array(':type'=>3, ':receiver'=>$to, ':sender'=>$from));
+                        DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender)', array(':type'=>3, ':receiver'=>$to, ':sender'=>$from));
                 }
                 else{
                         return;
@@ -67,7 +62,7 @@ class Notify {
 
         public static function DeleteNotification($id)
         {
-                DB::query('DELETE * FROM notifications WHERE id=:id',array(':id'=>$id));
+                DB::query('DELETE FROM notifications WHERE id=:id',array(':id'=>$id));
         }
 }
 ?>

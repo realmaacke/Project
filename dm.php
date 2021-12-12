@@ -73,18 +73,23 @@ if(isset($_POST['remove'])){
         ?> <h2 class="notificationText" ><a href="profile.php?username=<?php echo $senderName; ?>" class="UserLink"><?php echo $senderName?></a> Started following you!</h2> <?php
         break;
       }
+      
       ?>
       </div>
 
       <div class="removeBtn">
         <form action="dm.php" method="POST">
-        <input type="hidden" name="notificationid" value="<?php echo $n['id'] ?>">
+        <input type="hidden" name="notificationid" value="<?php echo $n['id']; ?>">
             <button class="dm-btn" name="remove" type="submit">X</button>
         </form>
       </div>
 
       </div>
       <?php
+    }
+    if(!DB::query('SELECT * FROM notifications WHERE receiver=:receiver', array(':receiver'=>$userid)))
+    {
+      echo "no notifications";
     }
     ?>
     </div>

@@ -23,48 +23,6 @@ if(isset($_GET['username']))
   $t_username = $targetedUser[0]['username'];
   $isAdmin = authorization::ValidateAdmin($userid);
 
-
-  if(isset($_POST['follow']))
-  {
-    Action::FollowAction($t_id, $userid, true);
-    Notify::isBeingFollowed($userid, $t_id);
-  }
-
-  if(isset($_POST['unfollow']))
-  {
-    Action::FollowAction($t_id, $userid, false);
-  }
-
-  // if(isset($_POST['like']))
-  // {
-  //   $postid = $_POST['postid'];
-  //   Action::LikeAction($postid, $userid);
-  // }
-
-  // if(isset($_POST['unlike']))
-  // {
-  //   $postid = $_POST['postid'];
-  //   Action::LikeAction($postid, $userid);
-  // }
-
-  if(isset($_POST['deleteComment']))
-  {
-
-  }
-
-  if(isset($_POST['deletePost']))
-  {
-    $postid = $_POST['postid'];
-    POST::DeletePost($postid);
-  }
-
-  if(isset($_POST['Comment']))
-  {
-    $body = $_POST['text'];
-    $postid = $_POST['postid'];
-    Comment::createComment($body, $postid, $userid);
-  }
-
   if(isset($_POST['PostBtn']))
   {
       if ($_FILES['postimg']['size'] == 0) 
@@ -77,7 +35,6 @@ if(isset($_GET['username']))
         Image::uploadImage('postimg', "UPDATE posts SET postimg=:postimg WHERE id=:postid", array(':postid'=>$postid));
       }
   }
-
 }
 
 ?>
@@ -133,14 +90,14 @@ if(isset($_GET['username']))
                             }
                             if($t_id != $userid)
                             { ?> 
-                              <form style="float:right" action="profile.php?username=<?php echo $t_username; ?>" method="POST">
+                              <form style="float:right" method="POST">
                                 <?php 
                                 if(Profile::CheckifFollowing($userid, $t_id))
                                 {
-                                  ?> <button type="submit" id="interact-btn" value="unfollow" name="unfollow">UnFollow</button> <?php
+                                  ?> <button type="button" id="follow" value="<?php echo $t_id; ?>"  name="unfollow">Unfollow</button> <?php
                                 } else 
                                 {
-                                  ?> <button type="submit" id="interact-btn" value="follow" name="follow">Follow</button> <?php
+                                  ?> <button type="button" id="follow" value="<?php echo $t_id; ?>"  name="follow">Follow</button> <?php
                                 } ?>
                                 <a href="chat.php?user_id=<?php echo $t_id; ?>" id="interact-btn">Message</a>
                               </form>
@@ -177,13 +134,9 @@ if(isset($_GET['username']))
       </div>
   </div>
 </div>
-
-<script type="text/javascript">
-
-
-$(document).ready(function ()
+<script src="main.js" type="text/javascript">
+  $(document).ready(function () 
 {
-
   $('[data-id]').click(function() 
   {
     var buttonid = $(this).attr('data-id');
@@ -197,18 +150,100 @@ $(document).ready(function ()
             data: '',
             success: function(r) 
             {
-            var res = JSON.parse(r)
+            var res = JSON.parse(r);
             $("[data-id='"+buttonid+"']").html(' '+res.Likes+' <i class="far fa-heart" data-aos="flip-right"></i><span></span>')
             },
 
             error: function(r) 
             {
-                  console.log(r)
+                console.log(r)
             }
       
       });
 
   })
+
+  $('#follow').click(function() 
+  {
+      $.ajax({
+
+            type: "POST",
+            url: "api/follow?user=" + $(this).val(),
+            processData: false,
+            contentType: "application/json",
+            data: '',
+            success: function(r) 
+            {
+              $('#follow').html(r);
+            },
+
+            error: function(r) 
+            {
+              console.log(r)
+            }
+      });
+  })
+
+  // this is the id of the form
+  $("#commentForm").submit(function(e) 
+    {
+
+    e.preventDefault(); // avoid to execute the actual submit of the form.
+
+    var form = $(this);
+
+            $.ajax
+            ({
+                    type: "POST",
+                    url: "api/comment",
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(data)
+                    {
+                    location.reload(); 
+                    }
+            });
+    });
+
+      // this is the id of the form
+  $("#deletePost").submit(function(e) 
+  {
+
+  e.preventDefault(); // avoid to execute the actual submit of the form.
+
+  var form = $(this);
+
+          $.ajax
+          ({
+                  type: "POST",
+                  url: "api/deletePost",
+                  data: form.serialize(), // serializes the form's elements.
+                  success: function(data)
+                  {
+                    console.log(data)
+                  location.reload(); 
+                  }
+          });
+  });
+
+  $("#deleteComment").submit(function(e) 
+  {
+
+  e.preventDefault(); // avoid to execute the actual submit of the form.
+
+  var form = $(this);
+
+          $.ajax
+          ({
+                  type: "POST",
+                  url: "api/deleteComment",
+                  data: form.serialize(), // serializes the form's elements.
+                  success: function(data)
+                  {
+                    console.log(data)
+                  location.reload(); 
+                  }
+          });
+  });
 
   $("button").click(function() {
       var commentValue = $(this).val(); 
