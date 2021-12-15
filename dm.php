@@ -89,7 +89,7 @@ if(isset($_POST['remove'])){
     }
     if(!DB::query('SELECT * FROM notifications WHERE receiver=:receiver', array(':receiver'=>$userid)))
     {
-      echo "no notifications";
+      echo "<h3 id='NoNotices'>You dont have any notifications</h3>";
     }
     ?>
     </div>

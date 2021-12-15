@@ -129,7 +129,7 @@ if(isset($_GET['username']))
         </div>
  
           <div class="flow">
-            <?php Post::ProfilePosts($userid, $t_username, $t_id, $isAdmin); ?>
+            <?php Post::Posts($userid, $t_username, $t_id, $isAdmin, false); ?>
           </div>
       </div>
   </div>
