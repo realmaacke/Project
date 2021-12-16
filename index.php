@@ -80,50 +80,11 @@ if(Notify::NavbarNotification($userid))
         </ul>
     </div>
     <div class="flow">
-      <?php Post::IndexPosts($userid, $isAdmin) ?>
+      <?php Post::Posts($userid, "", "", $isAdmin, true) ?>
    </div>
-<script type="text/javascript">
 
 
-$(document).ready(function ()
-{
-
-  $('[data-id]').click(function() 
-  {
-    var buttonid = $(this).attr('data-id');
-
-      $.ajax({
-
-            type: "POST",
-            url: "api/likes?id=" + $(this).attr('data-id'),
-            processData: false,
-            contentType: "application/json",
-            data: '',
-            success: function(r) 
-            {
-            var res = JSON.parse(r)
-            $("[data-id='"+buttonid+"']").html(' '+res.Likes+' <i class="far fa-heart" data-aos="flip-right"></i><span></span>')
-            },
-
-            error: function(r) 
-            {
-                  console.log(r)
-            }
-      
-      });
-
-  })
-
-
-        $('button').click(function ()
-        {
-         var commentValue = $(this).val(); 
-        
-         
-        });
-
-});
-
+<script src="main.js" type="text/javascript">
 </script>
 
 </body>

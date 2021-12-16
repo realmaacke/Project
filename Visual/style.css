@@ -153,7 +153,7 @@ color:#83e2b2;
 
 .PostComment{
     margin: auto;
-    width: 83%;
+    width: 90%;
     height: 60px;
     margin-bottom: 16px;
     border-bottom: 2px solid rgb(47, 51, 63);
@@ -196,6 +196,11 @@ color:#83e2b2;
     width: 100%;
     height: auto;
     display: inline-block;
+}
+
+.C_item img{
+    margin-left: 20px;
+    float:left;
 }
 
 .C_item h2{
@@ -801,4 +806,103 @@ padding-top: 20px;
 background: none;
 border: none;
 color:red;
+}
+
+#NoNotices{
+    color: #04AA6D;
+    margin-top: 50px;
+    text-align: center;
+}
+
+
+
+
+.signout_top{
+    width: 100%;
+    height: 20%;
+}
+
+.signout_top h2{
+    color: white;
+    font-size: 2.5em;
+    padding-top: 40px;
+text-align: center;
+}
+
+
+.signout_top p{
+    color: white;
+    font-size: 1.5em;
+text-align: center;
+}
+
+.signout_bottom{
+    width: 100%;
+    height: 70%;
+}
+
+.formController-signout{
+    width: 50%;
+    margin: 20px auto;
+    height: 100%;
+}
+
+.formController-signout p{
+    text-align: center;
+    font-size: 1.1em;
+    color: red;
+}
+
+.formController-signout input{
+    width: 100%;
+    margin-top: 20px;
+    height: 64px;
+    border: none;
+    color:white;
+    background-color: #04AA6D;
+    border-bottom: 1px solid white;
+    font-size: 1.4em;
+}
+
+#checkbox{
+width: 20px;
+float: right;
+margin-top: 10px;
+}
+
+#SIGNOUT-TXT{
+    margin-top: 20px;
+    color:white;
+    width: 80%;
+    text-align: center;
+    margin-bottom: 30px;
+    float: left;
+}
+
+#signout-btn{
+    border-radius: 12px;
+    border: none;
+    height: 60px;
+    background-color: #7c1f1f;
+}
+
+#signout-btn:hover{
+    background-color: #471919;
+}
+
+
+#return-btn{
+    font-size: 1.5em;
+    color: white;
+    margin-top: 20px;
+    margin-left: 5%;
+    width: 90%;
+    border-radius: 12px;
+    border: none;
+    height: 60px;
+    background-color: #83e2b2;
+}
+
+#return-btn:hover{
+    background-color: #96e6be8c;
 }
