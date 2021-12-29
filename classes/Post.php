@@ -106,6 +106,7 @@ class Post {
                         AND users.id = posts.user_id
                         AND follower_id = :userid
                         ORDER BY posts.id DESC;', array(':userid'=>$userid));
+                        $name = DB::query('SELECT username FROM users WHERE id=:userid',array(':userid'=>$userid))[0]['username'];
                         $postIndex = 0;
                         foreach($posts as $p)
                         { 
@@ -178,6 +179,26 @@ class Post {
                                 <?php } ?>
                         </div>
                         <?php
+                        }
+
+                        if($postIndex < 1)
+                        { ?>      
+                                <div class="post">
+                                        <div class="left">
+                                                <div class="top">
+                                                        <img src='Visual/img/favicon.ico' style='margin: auto; margin-left: 5px;' width='80' height='80'>
+                                                        <h3><a href="" style="color: green;">COMBINED</a></h3>
+                                                </div>
+                                        </div>
+                                                <!-- Right Side -->
+                                        <div class="right">
+                                                <div id="post-top">
+                                                <span style="color:green;">Welcome</span>, It seems like you're not following anyone. To locate users navigate to the <a style="color: green;" href="search.php">Search</a> tab and search for their usernames.
+                                                To customize your user navigate to <a style="color: green;" href="profile.php?username=<?php echo $name; ?>">Profile</a>, This is where you will be able to Post and watch your old posts.
+                                                </div>
+                                        </div>
+                                </div>
+                                <?php
                         }
                 }
                 if(!$type)

@@ -1,6 +1,6 @@
 <?php
 class Notify {
-
+ 
         // type: 1 = Message, 2 = user -> @, 3 = Followed
 
         public static function NavbarNotification($id)
