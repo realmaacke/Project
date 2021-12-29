@@ -54,14 +54,7 @@ if(isset($_GET['username']))
 </head>
 <body>
 
-<div class="navigation"> 
-        <ul>
-            <a href="index.php"><h1>COMBINED </h1></a>
-                <li> <a href="profile.php?username=<?php echo $name;?>">Profile</a> </li>
-                <li> <a href="dm.php">Messages</a> </li>
-                <li> <a href="search.php">Search</a> </li>
-        </ul>
-</div>
+<?php include 'navigation.php';  ?>
 
 <div class="P_Main">
         <div class="P_left">
@@ -85,8 +78,8 @@ if(isset($_GET['username']))
                             if($t_id == $userid)
                             {
                             ?>
-                            <a href="logout.php" style="color: red;" id="interact-btn">Sign out</a>
-                            <a href="my-account.php?username=<?php echo $name;?>" style="color: #83e2b2;" id="interact-btn" name="button">Settings</a> <?php
+                            <a href="logout.php" style="color: red;" id="interact-btn">Sign out <i class="fas fa-sign-out-alt"></i></a>
+                            <a href="my-account.php?username=<?php echo $name;?>" style="color: #83e2b2;" id="interact-btn" name="button">Settings <i class="fas fa-cog"></i></a> <?php
                             }
                             if($t_id != $userid)
                             { ?> 

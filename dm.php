@@ -35,14 +35,7 @@ if(isset($_POST['remove'])){
     <title>COMBINED - HOME</title>
 </head>
 <body>
-    <div class="navigation">
-        <ul>
-            <a href="index.php"><h1>COMBINED</h1></a>
-                <li> <a href="profile.php?username=<?php echo $name;?>">Profile</a> </li>
-                <li> <a href="dm.php">Messages</a> </li>
-                <li> <a href="search.php">Search</a> </li>
-        </ul>
-    </div>
+  <?php include 'navigation.php';  ?>
 
 
     <div class="flow">

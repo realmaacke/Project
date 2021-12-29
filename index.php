@@ -45,16 +45,6 @@ if(isset($_POST['self_DeleteComment']))
 }
 ///////////////// Website Functions  ////////////////////////////////
 
-// defining Variables
-$name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
-
-$Notify = "";
-if(Notify::NavbarNotification($userid))
-{
-  $Notify = "<i class='fas fa-comment-dots' style='color:yellow;'></i>";
-}
-
-
 ?>
 
 <!DOCTYPE html>
@@ -71,14 +61,7 @@ if(Notify::NavbarNotification($userid))
     <title>COMBINED - HOME</title>
 </head>
 <body>
-    <div class="navigation">
-        <ul>
-            <a href="index.php"><h1>COMBINED</h1></a>
-                <li> <a href="profile.php?username=<?php echo $name;?>">Profile</a> </li>
-                <li> <a href="dm.php">Messages <?php echo $Notify; ?></a> </li>
-                <li> <a href="search.php">Search</a> </li>
-        </ul>
-    </div>
+  <?php include 'navigation.php';  ?>
     <div class="flow">
       <?php Post::Posts($userid, "", "", $isAdmin, true) ?>
    </div>
