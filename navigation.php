@@ -1,5 +1,5 @@
 <?php 
-$Notify = "";
+$Notify = ""; 
 if(Notify::NavbarNotification($userid))
 {
   $Notify = "<i class='fas fa-comment-dots' style='color:yellow;'></i>";

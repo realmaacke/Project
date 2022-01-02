@@ -110,20 +110,5 @@ $("button").click(function() {  // grabing the button type.
 });
 </script>
 
-<script>
-  $("delete").click(function()
-{
-    $.ajax({
-    type: "POST",
-    url: url,
-    data: "DELETE",
-    success: success,
-    dataType: dataType
-  });
-});
-</script>
-
-
-
 </body>
 </html>

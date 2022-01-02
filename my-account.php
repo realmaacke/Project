@@ -30,6 +30,13 @@ if(isset($_GET['username']))
           header('Cache-Control: no-store, no-cache, must-revalidate');
   }
 
+  $username = DB::query('SELECT username FROM users WHERE id=:userid',array(':userid'=>$userid))[0]['username'];
+  $userpage = "profile.php?username=". $username;
+  
+  if(isset($_POST['return'])){
+   Redirect::goto($userpage);
+  }
+
   if(isset($_POST['uploadprofileimg'])){
         Image::uploadImage('profileimg', "UPDATE users SET profileimg = :profileimg WHERE id=:userid", array(':userid'=>$userid));
         header('Cache-Control: no-store, no-cache, must-revalidate');
@@ -57,14 +64,7 @@ else {
 </head>
 <body>
 
-<div class="navigation"> 
-        <ul>
-            <a href="index.php"><h1>COMBINED </h1></a>
-                <li> <a href="profile.php?username=<?php echo $user[0]['username'];?>">Profile</a> </li>
-                <li> <a href="dm.php">Messages</a> </li>
-                <li> <a href="search.php">Search</a> </li>
-        </ul>
-</div>
+  <?php include 'navigation.php' ?>
 
 <div class="P_Main">
         <div class="P_left">
@@ -88,7 +88,8 @@ else {
                           </div>
                           <div class="P_text_right">
                           <form action="my-account.php?username=<?php echo $user[0]['username']; ?>" method="POST">
-                                <button type="submit" name="Change" value="Change Color" id="interact-btn">Change Banner Color</button>
+                                <button type="submit" name="return" id="back-btn" >Return to profile</button>
+                                <button type="submit" name="Change" value="Change Color" id="interact-btn">Apply Color</button>
                                 <input type="color" name="color" id="bannerColor" hidden />
                                 <button type="button" name="Change" value="Change Color" id="bannerColor-btn"><i class="fas fa-palette"></i></button>
                           </form>
@@ -107,36 +108,35 @@ else {
 </form>
 
 <script>
-  // script that opens the comment section
-$("button").click(function() {  // grabing the button type.
-    var commentValue = $(this).val(); // grabing the value of the button, (set to the postindex)
-    row = $('#' + commentValue);
+    // script that opens the comment section
+  $("button").click(function() {  // grabing the button type.
+      var commentValue = $(this).val(); // grabing the value of the button, (set to the postindex)
+      row = $('#' + commentValue);
 
-    //switching the css when true
-    if(row.css('display') === 'none')
-    {
-      row.css('display', 'inline-block');
-    }
-    else if(row.css('display') === 'inline-block')
-    {
-      row.css('display', 'none');
-    }
-    else{
-      return;
-    }
-});
+      //switching the css when true
+      if(row.css('display') === 'none')
+      {
+        row.css('display', 'inline-block');
+      }
+      else if(row.css('display') === 'inline-block')
+      {
+        row.css('display', 'none');
+      }
+      else{
+        return;
+      }
+  });
 
-$('#bannerColor-btn').click(function(){   // triggers file "explorer"
- $('#bannerColor').trigger('click'); });
+  $('#bannerColor-btn').click(function(){   // triggers file "explorer"
+  $('#bannerColor').trigger('click'); });
 
-$('#OpenImgUpload').click(function(){   // triggers file "explorer"
- $('#imgupload').trigger('click'); });
+  $('#OpenImgUpload').click(function(){   // triggers file "explorer"
+  $('#imgupload').trigger('click'); });
 
 
-document.getElementById("imgupload").onchange = function() {    // send profile pic post form when file != null
-        $('#submitPicture').trigger('click');
-};
-
+  document.getElementById("imgupload").onchange = function() {    // send profile pic post form when file != null
+          $('#submitPicture').trigger('click');
+  };
 </script>
 </body>
 </html>

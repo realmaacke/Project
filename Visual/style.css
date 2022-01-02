@@ -474,6 +474,22 @@ color: #83e2b2;
 color: #83e2b2;
 }
 
+#back-btn{
+
+    float:right;
+    margin-right: 14px;
+    margin-top: 20px;
+    border-radius: 12px;
+    background-color: rgb(51, 54, 65);
+    padding: 6px;
+    color: white;
+    border: none;
+  }
+  
+  #back-btn:hover{
+  color: #83e2b2;
+  }
+
 #follow{
     float:right;
     margin-right: 14px;

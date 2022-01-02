@@ -1,13 +1,14 @@
 <?php
-include('autoload.php');
+include('autoload.php');    // spl autoloader
 
 
-if (Login::isLoggedIn()) {
+
+if (Login::isLoggedIn()) {  // validating that the user is logged in 
   $userid = Login::isLoggedIn();
 } else {
  Redirect::goto('login.php');
 }
-$name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username']; // grabing name for navbar
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

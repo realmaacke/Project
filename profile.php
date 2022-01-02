@@ -1,7 +1,7 @@
 <?php
-include('autoload.php');
-/////////////////  CHECKING FOR PERMISSION  ////////////////////////////////
-if (Login::isLoggedIn())  
+include('autoload.php');  // autoloader
+
+if (Login::isLoggedIn())   // validating user
 { 
   $userid = Login::isLoggedIn(); 
 }
@@ -9,15 +9,19 @@ else
 {
   Redirect::goto('login.php'); 
 }
+
 $imageToAdd = "No Image Selected";
+
 if(isset($_GET['username']))
 {
-  if(!Profile::verify())
+  if(!Profile::verify())  // verifiyng so there exists a user to display the profile
   {
     Redirect::goto('index.php');
   }
+
   $name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
 
+  // targeted profile user
   $targetedUser = DB::query('SELECT * FROM users WHERE username=:username',array(':username'=>htmlspecialchars($_GET['username'])));
   $t_id = $targetedUser[0]['id'];
   $t_username = $targetedUser[0]['username'];

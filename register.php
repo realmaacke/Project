@@ -1,11 +1,11 @@
 <?php 
 include('autoload.php');  // loading all classes using spl loader
 $error = "";
-if(isset($_POST['register'])){
- $usrnm = htmlspecialchars($_POST['username']);
- $pass =  htmlspecialchars($_POST['password']);
- $email = htmlspecialchars($_POST['email']);
- $error = authorization::register($usrnm, $pass, $email);
+if(isset($_POST['register'])){    
+ $usrnm = escape($_POST['username']); // escaping all the $_POST Variables to prevent SQL injections
+ $pass =  escape($_POST['password']);
+ $email = escape($_POST['email']);
+ $error = authorization::register($usrnm, $pass, $email); // sending the variables to the function, and returns an error if nessecary
 }
 ?>
 <!DOCTYPE html>
@@ -55,10 +55,10 @@ if(isset($_POST['register'])){
 </body>
 </html>
 
-<script>
+<script>  // simple timer for the error text to dissapear
   setTimeout(function(){
   if ($('#error').length > 0) {
     $('#error').remove();
   }
-}, 3000)
+}, 3000)  // <- Lenght of the timer
 </script>
