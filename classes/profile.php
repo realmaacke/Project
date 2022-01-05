@@ -40,8 +40,12 @@ class Profile
            }
         }
         else {
-            $returnValue = "";
+            if($isAdmin)
+            {
+             $returnValue= "<img src='Visual/img/Moderator.png' style='margin-left: 12px;'>";
+            }
         }
+
         return $returnValue;
     }
 
@@ -178,6 +182,32 @@ class Profile
         }
 
 
+    }
+
+    public static function messageImage($t_username)
+    {
+        $hasImage = false;
+        $returnValue = "";
+        if(DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$t_username))[0]['profileimg']) 
+        { 
+            $hasImage = true; 
+        }
+        else
+        { 
+            $hasImage = false; 
+        }
+
+       $img = DB::query('SELECT profileimg FROM users WHERE username=:username', array(':username'=>$t_username))[0]['profileimg'];
+       
+        if($hasImage)
+        { 
+            $returnValue = "<img src='". $img."' class='msg-img' width='50' height='50' >";
+        }
+        else 
+        {
+          $returnValue = "<img src='../Visual/img/avatar.png' class='msg-img' width='40' height='40'>"; 
+        }
+        return $returnValue;
     }
 
     public static function EditProfileImg($username)

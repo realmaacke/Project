@@ -18,13 +18,8 @@ if(isset($_GET['username']))
   {
     Redirect::goto('index.php');
   }
-
-  $name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
-
-  // targeted profile user
-  $targetedUser = DB::query('SELECT * FROM users WHERE username=:username',array(':username'=>htmlspecialchars($_GET['username'])));
-  $t_id = $targetedUser[0]['id'];
-  $t_username = $targetedUser[0]['username'];
+  $localuser = User::getUserByID($userid);
+  $target = User::getUserByName(escape($_GET['username']));
   $isAdmin = authorization::ValidateAdmin($userid);
 
   if(isset($_POST['PostBtn']))
@@ -54,7 +49,7 @@ if(isset($_GET['username']))
        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
        <link rel="icon" type="image/x-icon" href="Visual\img\favicon.ico">
     <script src="https://kit.fontawesome.com/6bfb37676a.js" crossorigin="anonymous"></script>
-    <title>COMBINED PROFILE - <?php echo $t_username?> </title>
+    <title>COMBINED PROFILE - <?php echo $target[0]['username']?> </title>
 </head>
 <body>
 
@@ -62,10 +57,10 @@ if(isset($_GET['username']))
 
 <div class="P_Main">
         <div class="P_left">
-                <div class="P_L_T" style="background-color: <?php echo Profile::ProfileBanner($targetedUser); ?>">
+                <div class="P_L_T" style="background-color: <?php echo Profile::ProfileBanner($target); ?>">
                         <div class="P_L_T_I">
                           <?php
-                          echo Profile::displayImage($t_username, true);
+                          echo Profile::displayImage($target[0]['username'], true);
                           ?>
 
                         </div>
@@ -74,29 +69,29 @@ if(isset($_GET['username']))
                         <hr>
                           <div class="P_text">
                             <?php
-                            echo Profile::Statistic($t_id, $t_username);
-                            echo Profile::PermisionBadges($t_id); ?>
+                            echo Profile::Statistic($target[0]['id'], $target[0]['username']);
+                            echo Profile::PermisionBadges($target[0]['id']); ?>
 
                             </div>
                             <div class="P_text_right"> <?php
-                            if($t_id == $userid)
+                            if($target[0]['id'] == $userid)
                             {
                             ?>
                             <a href="logout.php" style="color: red;" id="interact-btn">Sign out <i class="fas fa-sign-out-alt"></i></a>
-                            <a href="my-account.php?username=<?php echo $name;?>" style="color: #83e2b2;" id="interact-btn" name="button">Settings <i class="fas fa-cog"></i></a> <?php
+                            <a href="my-account.php?username=<?php echo $localuser[0]['username'];?>" style="color: #83e2b2;" id="interact-btn" name="button">Settings <i class="fas fa-cog"></i></a> <?php
                             }
-                            if($t_id != $userid)
+                            if($target[0]['id'] != $userid)
                             { ?> 
                               <form style="float:right" method="POST">
                                 <?php 
-                                if(Profile::CheckifFollowing($userid, $t_id))
+                                if(Profile::CheckifFollowing($userid, $target[0]['id']))
                                 {
-                                  ?> <button type="button" id="follow" value="<?php echo $t_id; ?>"  name="unfollow">Unfollow</button> <?php
+                                  ?> <button type="button" id="follow" value="<?php echo $target[0]['id']; ?>"  name="unfollow">Unfollow</button> <?php
                                 } else 
                                 {
-                                  ?> <button type="button" id="follow" value="<?php echo $t_id; ?>"  name="follow">Follow</button> <?php
+                                  ?> <button type="button" id="follow" value="<?php echo $target[0]['id']; ?>"  name="follow">Follow</button> <?php
                                 } ?>
-                                <a href="chat.php?user_id=<?php echo $t_id; ?>" id="interact-btn">Message</a>
+                                <a href="dm/chat.php?id=<?php echo $target[0]['id']; ?>" id="interact-btn">Message</a>
                               </form>
                                 <?php 
                             }
@@ -106,11 +101,11 @@ if(isset($_GET['username']))
                           
                       </div>
                 </div>
-                <?php if($t_id == $userid)
+                <?php if($target[0]['id'] == $userid)
                 { ?> 
                   <div class="P_L_B">
                     <div class="PostBox">
-                        <form action="profile.php?username=<?php echo $t_username; ?>" method="POST" enctype="multipart/form-data">
+                        <form action="profile.php?username=<?php echo $target[0]['username']; ?>" method="POST" enctype="multipart/form-data">
                           <div class="post_top" id="form">
                             <textarea data-emojiable="true" name="postbody" value="text" placeholder="Comment Something!" class="textAreaPost" id="emoji" cols="80" rows="2"></textarea>
                           </div>
@@ -126,7 +121,7 @@ if(isset($_GET['username']))
         </div>
  
           <div class="flow">
-            <?php Post::Posts($userid, $t_username, $t_id, $isAdmin, false); ?>
+            <?php Post::Posts($userid, $target[0]['username'], $target[0]['id'], $isAdmin, false); ?>
           </div>
       </div>
   </div>
