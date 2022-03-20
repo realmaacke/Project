@@ -1,15 +1,16 @@
 <?php
 include('autoload.php');  // loading all classes using spl loader
 
-/////////////////  CHECKING FOR PERMISSION  ////////////////////////////////
-if (Login::isLoggedIn())  { $userid = Login::isLoggedIn(); }
-else {  Redirect::goto('login.php'); }
+  if (Login::isLoggedIn())  
+  {
+    $userid = Login::isLoggedIn(); 
+  }
+  else 
+  {
+    Redirect::goto('login.php'); 
+  }
 
-$isAdmin = false;
-if(DB::query('SELECT user_id FROM administrator WHERE user_id=:userid', array(':userid'=>$userid)))
-{ $isAdmin = true; }
-else
-{ $isAdmin = false; }
+$isAdmin = authorization::ValidateAdmin($userid);
 
 /////////////////  Admin Permissions  ////////////////////////////////
 
@@ -36,14 +37,10 @@ if(isset($_POST['A_DeletePost']))
  }
 }
 
-/////////////////  COMMENT OWNER Permissions  ///////////////////
-
-
 if(isset($_POST['self_DeleteComment']))
 {
   authorization::CommentDelete(htmlspecialchars($_GET['comment']));
 }
-///////////////// Website Functions  ////////////////////////////////
 
 ?>
 

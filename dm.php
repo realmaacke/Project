@@ -5,14 +5,7 @@ include('autoload.php');  // loading all classes using spl loader
 if (Login::isLoggedIn())  { $userid = Login::isLoggedIn(); }
 else {  Redirect::goto('login.php'); }
 
-$isAdmin = false;
-if(DB::query('SELECT user_id FROM administrator WHERE user_id=:userid', array(':userid'=>$userid)))
-{ $isAdmin = true; }
-else
-{ $isAdmin = false; }
-
-$name = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
-
+$isAdmin = authorization::ValidateAdmin($userid);
 
 if(isset($_POST['remove'])){
   Notify::DeleteNotification($_POST['notificationid']);
