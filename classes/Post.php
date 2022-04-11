@@ -2,16 +2,17 @@
 
 class Post {
 
-        public static function createPost($postbody, $loggedInUserId, $profileUserId) {
+        public static function createPost($postbody, $loggedInUserId, $profileUserId) { // create post method
 
-                if (strlen($postbody) > 160 || strlen($postbody) < 1) {
+                if (strlen($postbody) > 160 || strlen($postbody) < 1) { // rules for the post 
                         die('Incorrect length!');
                 }
 
+                // add post to specified topics
                 $topics = self::getTopics($postbody);
                 self::UploadTopics($topics);
 
-                if ($loggedInUserId == $profileUserId) {
+                if ($loggedInUserId == $profileUserId) {        // if someone @ u this will execute notify method
 
                         if (count(Notify::atNotifications($postbody)) != 0) {
                                 foreach (Notify::atNotifications($postbody) as $key => $n) {
@@ -30,7 +31,7 @@ class Post {
                 }
         }
 
-        public static function createImgPost($postbody, $loggedInUserId, $profileUserId) {
+        public static function createImgPost($postbody, $loggedInUserId, $profileUserId) {      // same method as above except u can insert picture (uses imgur as api)
 
                 if (strlen($postbody) > 160) {
                         die('Incorrect length!');
@@ -59,7 +60,7 @@ class Post {
         }
 
 
-        public static function getTopics($text) {
+        public static function getTopics($text) {       // if # is in $text adding to topics db
 
                 $text = explode(" ", $text);
 
@@ -74,12 +75,12 @@ class Post {
                 return $topics;
         }
 
-        public static function UploadTopics($text)
+        public static function UploadTopics($text)      // uploadtopics method
         {
                 DB::query('INSERT INTO topics VALUES (\'\', \'\', :topics)', array(':topics'=>$text));
         }
 
-        public static function link_add($text) {
+        public static function link_add($text) {        // if someone @ it will make a link to their profile pages.
 
                 $text = explode(" ", $text);
                 $newstring = "";
@@ -97,22 +98,28 @@ class Post {
         }
 
 
-        public static function Posts($userid, $t_name, $t_id, $isAdmin, $type) 
+        public static function Posts($userid, $t_name, $t_id, $isAdmin, $type) // timeline post method
         {
                 if($type)
                 {
+                        // querry for people user is following.
                         $posts = DB::query('SELECT posts.id, posts.body, posts.likes, users.`username` FROM users, posts, followers
                         WHERE posts.user_id = followers.user_id
                         AND users.id = posts.user_id
                         AND follower_id = :userid
                         ORDER BY posts.id DESC;', array(':userid'=>$userid));
+
+
+                        // local username
                         $name = DB::query('SELECT username FROM users WHERE id=:userid',array(':userid'=>$userid))[0]['username'];
-                        $postIndex = 0;
+
+                        $postIndex = 0; // int that increments depending on what post it is (help with the js to open the right comment to the right post)
+                        
                         foreach($posts as $p)
                         { 
                         $postIndex++;
                         ?>
-                        <div class="post">
+                        <div class="post">     
                         <div class="left">
                                 <div class="top">
                                         <?php  echo Profile::displayImage($p['username'], false); ?>
@@ -180,7 +187,7 @@ class Post {
                         </div>
                         <?php
                         }
-
+                        // if user got 0 posts at homepage, display basic welcome message
                         if($postIndex < 1)
                         { ?>      
                                 <div class="post">
@@ -201,7 +208,7 @@ class Post {
                                 <?php
                         }
                 }
-                if(!$type)
+                if(!$type)      // if false method is for displaying profile posts
                 {
 
                         $postIndex = 0;

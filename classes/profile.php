@@ -2,7 +2,7 @@
 class Profile
 {
 
-    public static function verify()
+    public static function verify() // verify so u cant check a non existing users profile page
     {
         $verify = DB::query('SELECT * FROM users WHERE username=:username',array(':username'=>htmlspecialchars($_GET['username'])));
         
@@ -15,7 +15,7 @@ class Profile
         }
     }
 
-    public static function PermisionBadges($t_id)
+    public static function PermisionBadges($t_id)   // profile badges for permissions
     {
         $returnValue = "";
         $isAdmin = false;
@@ -49,7 +49,7 @@ class Profile
         return $returnValue;
     }
 
-    public static function CheckifFollowing($userid, $t_id)
+    public static function CheckifFollowing($userid, $t_id) // check if user is following $T_id (targetid)
     {
         if(DB::query('SELECT follower_id FROM followers WHERE user_id=:targetid AND follower_id=:userid', array(':targetid'=>$t_id,':userid'=>$userid)))
         {
@@ -60,7 +60,7 @@ class Profile
         }
     }
 
-    public static function CheckifLiked($userid, $postid)
+    public static function CheckifLiked($userid, $postid)   // check if user has liked $postid
     {
         if (DB::query('SELECT user_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$postid, ':userid'=>$userid))) 
         {
@@ -72,7 +72,7 @@ class Profile
         }
     }
 
-    public static function Ammount($postid, $type)
+    public static function Ammount($postid, $type)  // method that determins how many likes/comments the post got
     {
         if($type)   // likes
         {
@@ -99,7 +99,7 @@ class Profile
         }
     }
 
-    public static function Statistic($t_id, $t_username)
+    public static function Statistic($t_id, $t_username)    // method that displays users followers/following/posts
     {
         $FollowingAmmount = DB::query('SELECT * FROM followers WHERE follower_id=:userid',array(':userid'=>$t_id));
         $FollowersAmmount = DB::query('SELECT * FROM followers WHERE user_id=:userid',array(':userid'=>$t_id));
@@ -127,7 +127,7 @@ class Profile
         return $returnValue;
     }
 
-    public static function displayImage($t_username, $type)
+    public static function displayImage($t_username, $type) // profile image else use standard image (Visual/img/avatar.png)
     {
         if($type)
         {

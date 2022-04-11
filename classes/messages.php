@@ -2,7 +2,7 @@
 
 class Messages{
     
-    public static function DisplayFriends($userid)
+    public static function DisplayFriends($userid)  // display friends method, just foreach loops all firends from db
     {
         $friends = DB::query('SELECT * FROM followers WHERE follower_id=:id',array(':id'=>$userid));
 

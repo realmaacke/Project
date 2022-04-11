@@ -1,7 +1,7 @@
 <?php
 class login 
 { 
-            public static function isLoggedIn() 
+            public static function isLoggedIn() // check if logged in and checks if coockies is enables else setcookie();
             {
 
                 if (isset($_COOKIE['CMBNID'])) 

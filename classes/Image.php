@@ -1,10 +1,10 @@
 <?php
 class Image {
 
-        public static function uploadImage($formname, $query, $params) {
+        public static function uploadImage($formname, $query, $params) {        // upload image to imgur.
                 $image = base64_encode(file_get_contents($_FILES[$formname]['tmp_name']));
 
-                $options = array('http'=>array(
+                $options = array('http'=>array( // settings for the upload
                         'method'=>"POST",
                         'header'=>"Authorization: Bearer 81cef4caafb3a576d5fbff9c4009375f48db51bf\n".
                         "Content-Type: application/x-www-form-urlencoded",
