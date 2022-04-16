@@ -4,7 +4,7 @@ $(document).ready(function ()
   {
     var buttonid = $(this).attr('data-id');
 
-      $.ajax({
+      $.ajax({ // like function
 
             type: "POST",
             url: "api/likes?id=" + $(this).attr('data-id'),
@@ -26,7 +26,7 @@ $(document).ready(function ()
 
   })
 
-  $('#follow').click(function() 
+  $('#follow').click(function()   // follow function
   {
       $.ajax({
 

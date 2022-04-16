@@ -4,9 +4,9 @@ if (!Login::isLoggedIn()) {
         Redirect::goto('login.php');
 }
 
-if (isset($_POST['confirm'])) {
+if (isset($_POST['confirm'])) { 
 
-        if (isset($_POST['alldevices'])) {
+        if (isset($_POST['alldevices'])) { // if all devices is true remove coockies
 
                 DB::query('DELETE FROM login_tokens WHERE user_id=:userid', array(':userid'=>Login::isLoggedIn()));
                 Redirect::goto('login.php');
@@ -58,6 +58,7 @@ if (isset($_POST['confirm'])) {
         </div>
 </div>
 
+<!-- return to index.php if user where to press the reutrn button -->
 <script type="text/javascript">
   $(document).ready(function () {
 

@@ -1,0 +1,23 @@
+open mysql,
+
+open "classes/db.php", The sql variables will be located there.
+
+standard values for the variables 
+
+host= "127.0.0.1" (localhost)
+
+dbname= "project"
+
+charset= "utf8" (what language the sql will use)
+
+username= "root"    // important to change username of create a new user if the sql server isnt local
+
+password = "" // important to use a password if ur sql server isnt local.
+
+
+change the variables to fit your sql server.
+
+
+Import the projcet.sql file into the sql server.
+
+DONE! 

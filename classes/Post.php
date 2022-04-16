@@ -212,8 +212,8 @@ class Post {
                 {
 
                         $postIndex = 0;
-                        $posts = DB::query('SELECT * FROM posts WHERE user_id=:targetid',array(':targetid'=>$t_id));
-                        foreach($posts as $p)
+                        $posts = DB::query('SELECT * FROM posts WHERE user_id=:targetid',array(':targetid'=>$t_id));    // querry for the posts
+                        foreach($posts as $p)   // dumps all the posts into an $p array
                         { 
                           $postIndex++;
                           ?>
@@ -244,7 +244,7 @@ class Post {
                                                 </div>
                                         </div>
                                 </div>
-
+                                                        <!-- Comment section -->
                         <div class="comments" id="<?php echo $postIndex; ?>">
                                 <div class="PostComment">
                                   <form id="commentForm" method="POST">
@@ -255,7 +255,7 @@ class Post {
                                 </div>
         
                                 <?php
-                                $commentIndex = 0;
+                                $commentIndex = 0;      
                                 $comment = DB::query('SELECT * FROM comments WHERE post_id=:postid', array(':postid'=>$p['id']));
                                 $commentOwner = false;
 

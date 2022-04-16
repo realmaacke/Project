@@ -1,8 +1,8 @@
 <?php
 
-class Topic
+class Topic // similar class to post.php
 {
-    public static function DisplayTopics($topic, $userid, $isAdmin)
+    public static function DisplayTopics($topic, $userid, $isAdmin) 
     {
 
             $posts = DB::query("SELECT * FROM posts WHERE FIND_IN_SET(:topic, topics)", array(':topic'=>htmlspecialchars($_GET['topic'])));

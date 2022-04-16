@@ -1,4 +1,5 @@
 <?php 
+// navigation bar at the top of the page
 $Notify = ""; 
 if(Notify::NavbarNotification($userid))
 {

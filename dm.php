@@ -48,6 +48,7 @@ if(isset($_POST['remove'])){
       <div class="section_right">
       <?php 
       
+      // types of notifications
       switch($n['type']){
         case "1":
         ?> <h2 class="notificationText"><a href="profile.php?username=<?php echo $senderName; ?>" class="UserLink"><?php echo $senderName?></a> Tagged you in a Post!</h2>  <?php 

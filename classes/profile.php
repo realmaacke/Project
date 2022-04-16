@@ -127,7 +127,7 @@ class Profile
         return $returnValue;
     }
 
-    public static function displayImage($t_username, $type) // profile image else use standard image (Visual/img/avatar.png)
+    public static function displayImage($t_username, $type) // profile image else use standard image (Visual/img/avatar.png) also uses $type to delcare what size the image should be
     {
         if($type)
         {
@@ -184,7 +184,7 @@ class Profile
 
     }
 
-    public static function messageImage($t_username)
+    public static function messageImage($t_username)    // the image of a post else return false and use the standard image
     {
         $hasImage = false;
         $returnValue = "";
@@ -210,7 +210,7 @@ class Profile
         return $returnValue;
     }
 
-    public static function EditProfileImg($username)
+    public static function EditProfileImg($username)    // function that alows user to change his/hers image
     {
             $hasImage = false;
             $returnValue = "";
@@ -237,7 +237,7 @@ class Profile
         
     }
 
-    public static function ProfileBanner($targetedUser)
+    public static function ProfileBanner($targetedUser) // color of the profile if non is set use the normal, (uploads choice of color to the user db in coulmn colorbanner)
     {
         $colorMap[0] = '#5ed6a0'; // DEFAULT
 
@@ -251,7 +251,7 @@ class Profile
         }
     }
 
-    public static function changeProfileBanner($userid)
+    public static function changeProfileBanner($userid) // change of color banner
     {
         $color = $_POST['color'];
         if(DB::query('SELECT colorbanner FROM users WHERE id=:userid',array(':userid'=>$userid)))

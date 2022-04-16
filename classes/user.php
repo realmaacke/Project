@@ -1,18 +1,20 @@
 <?php
 
 
+// user class
+
 class User{
-    public static function getUserByID($id)
+    public static function getUserByID($id) // returns id of specified user
     {
        return DB::query('SELECT * FROM users WHERE id=:userid', array(':userid'=>$id));
     }
 
-    public static function getUserByName($name)
+    public static function getUserByName($name) // returnds username of specified user
     {
         return DB::query('SELECT * FROM users WHERE username=:username', array(':username'=>$name));
     }
 
-    public static function displayFriendslist($userid)
+    public static function displayFriendslist($userid)  // display all followers that the specified user also follows.
     {
         $data = DB::query('SELECT * FROM followers WHERE user_id=:userid',array(':userid'=>$userid));
 

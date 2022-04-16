@@ -54,7 +54,8 @@ if(isset($_POST['login'])){
 </html>
 
 <script>
-  setTimeout(function(){
+  // timer for error message so it will dissapear.
+  setTimeout(function(){  
   if ($('#error').length > 0) {
     $('#error').remove();
   }

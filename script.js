@@ -1,3 +1,5 @@
+// Search method
+
 //Getting value from "ajax.php".
 function fill(Value) {
     //Assigning value to "search" div in "search.php" file.
